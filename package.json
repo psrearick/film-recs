@@ -11,6 +11,8 @@
         "types:check": "tsc --noEmit",
         "test": "LARAVEL_BYPASS_ENV_CHECK=1 vp test run",
         "test:e2e": "playwright test",
+        "knip": "knip",
+        "audit": "npm audit",
         "prepare": "husky"
     },
     "dependencies": {
@@ -40,6 +42,7 @@
         "babel-plugin-react-compiler": "^1.0.0",
         "husky": "^9.1.7",
         "jsdom": "^30.0.1",
+        "knip": "^6.35.1",
         "lint-staged": "^17.5.1",
         "vite-plus": "0.3.0"
     },

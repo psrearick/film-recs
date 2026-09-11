@@ -4,6 +4,8 @@ set -euo pipefail
 # Frontend checks run natively: they need no database access, and running
 # them through Sail fails because node_modules holds macOS native bindings
 # that don't resolve inside the Linux container.
+composer audit
+npm run audit
 npm run check
 npm run types:check
 npm run test

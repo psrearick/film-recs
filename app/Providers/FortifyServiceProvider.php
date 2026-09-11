@@ -10,7 +10,6 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
 use Laravel\Fortify\Fortify;
@@ -37,7 +36,11 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::redirectUserForTwoFactorAuthenticationUsing(RedirectIfTwoFactorAuthenticatable::class);
 
         RateLimiter::for('login', function (Request $request) {
-            $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
+            $throttleKey = $request->string(Fortify::username())
+                ->lower()
+                ->transliterate()
+                ->append('|', $request->ip() ?? '')
+                ->value();
 
             return Limit::perMinute(5)->by($throttleKey);
         });
@@ -47,11 +50,11 @@ class FortifyServiceProvider extends ServiceProvider
         });
 
         RateLimiter::for('passkeys', function (Request $request) {
-            $credentialId = $request->input('credential.id');
+            $credentialId = $request->string('credential.id');
 
-            return Limit::perMinute(10)->by(
-                ($credentialId ?: $request->session()->getId()).'|'.$request->ip()
-            );
+            $key = $credentialId->isNotEmpty() ? $credentialId->value() : $request->session()->getId();
+
+            return Limit::perMinute(10)->by($key.'|'.$request->ip());
         });
 
         Fortify::loginView(function () {

@@ -60,8 +60,13 @@
         "lint:check": [
             "pint --parallel --test"
         ],
+        "mutate": [
+            "pest --mutate --parallel"
+        ],
         "ci:check": [
             "Composer\\Config::disableProcessTimeout",
+            "composer audit",
+            "npm run audit",
             "npm run check",
             "npm run types:check",
             "npm run test",
