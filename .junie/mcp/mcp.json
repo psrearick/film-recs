@@ -1,8 +1,8 @@
 {
     "mcpServers": {
         "laravel-boost": {
-            "command": "/opt/homebrew/Cellar/php/8.5.1_2/bin/php",
-            "args": ["/Users/philliprearick/dev/film-recs/artisan", "boost:mcp"]
+            "command": "vendor/bin/sail",
+            "args": ["artisan", "boost:mcp"]
         }
     }
 }

@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Frontend checks run natively: they need no database access, and running
+# them through Sail fails because node_modules holds macOS native bindings
+# that don't resolve inside the Linux container.
+npm run check
+npm run types:check
+npm run test
+
+# PHP checks run through Sail: artisan test needs the "mysql" hostname,
+# which only resolves inside the Sail network.
+vendor/bin/sail composer run test

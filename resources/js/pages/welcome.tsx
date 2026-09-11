@@ -9,7 +9,11 @@ export default function Welcome() {
                 <div className="flex w-full flex-col opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
                     <nav className="flex items-center justify-between bg-gray-100 p-4 dark:bg-gray-900">
                         <Link href="/" className="text-2xl text-white">
-                            <img src="/logo.png" alt="FilmRecs Logo" className="h-12" />
+                            <img
+                                src="/logo.png"
+                                alt="FilmRecs Logo"
+                                className="h-12"
+                            />
                         </Link>
                         <div>
                             {auth.user ? (

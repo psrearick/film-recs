@@ -1,3 +1,5 @@
+import { home, login } from '@/routes';
+import { store } from '@/routes/register';
 import { Form, Link } from '@inertiajs/react';
 
 export default function Register() {
@@ -6,11 +8,15 @@ export default function Register() {
             <div className="flex min-h-screen flex-col items-center bg-gray-100 text-gray-900 lg:justify-center dark:bg-gray-950 dark:text-gray-100">
                 <div className="w-full opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
                     <nav className="flex items-center justify-between bg-gray-100 p-6 dark:bg-gray-800">
-                        <Link href="/" className="text-2xl text-white">
-                            <img src="/logo.png" alt="FilmRecs Logo" className="h-12" />
+                        <Link href={home()} className="text-2xl text-white">
+                            <img
+                                src="/logo.png"
+                                alt="FilmRecs Logo"
+                                className="h-12"
+                            />
                         </Link>
                         <Link
-                            href="/login"
+                            href={login()}
                             className="text-blue-300 hover:text-blue-500"
                         >
                             Login
@@ -22,8 +28,7 @@ export default function Register() {
                         </div>
                         <div className="w-full max-w-xl">
                             <Form
-                                action="/register"
-                                method="post"
+                                {...store.form()}
                                 className="flex flex-col gap-4"
                             >
                                 {({ errors }) => (
