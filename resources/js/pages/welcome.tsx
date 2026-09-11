@@ -7,9 +7,9 @@ export default function Welcome() {
             <Head title="Welcome" />
             <div className="flex min-h-screen flex-col items-center bg-gray-100 text-gray-900 lg:justify-center dark:bg-gray-950 dark:text-gray-100">
                 <div className="flex w-full flex-col opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
-                    <nav className="flex items-center justify-between bg-gray-100 p-6 dark:bg-gray-800">
+                    <nav className="flex items-center justify-between bg-gray-100 p-4 dark:bg-gray-900">
                         <Link href="/" className="text-2xl text-white">
-                            FilmRecs
+                            <img src="/logo.png" alt="FilmRecs Logo" className="h-12" />
                         </Link>
                         <div>
                             {auth.user ? (
