@@ -17,6 +17,7 @@ The Movie Database (TMDb) API covers everything the concept doc needs from a sin
 - Search and discover endpoints for adding titles and for sourcing recommendation candidates.
 
 Implications for the plan:
+
 - Requires a TMDb API key (v3 auth) stored in `.env` / `config/services.php`.
 - TMDb's terms require attribution ("This product uses the TMDb API but is not endorsed or certified by TMDb") — add it to the footer.
 - We cache TMDb responses locally (titles, credits, keywords, providers) rather than re-fetching on every request, both for speed and to stay within rate limits.
@@ -82,30 +83,36 @@ Only now, against the bounded candidate pool (expect low hundreds of titles, not
 ## Phased build
 
 **Phase 0 — TMDb integration foundation**
+
 - `TmdbClient` service wrapping the HTTP calls (search, title details, credits, keywords, watch providers), config in `config/services.php`.
 - `Title` model + migrations for titles/genres/people/keywords/pivots.
 - A sync path that, given a TMDb id, fetches details/credits/keywords/providers and upserts local records. No UI yet — cover with feature tests hitting a faked HTTP client.
 
 **Phase 1 — Library: add & rate titles**
+
 - Search page (Inertia) hitting a backend endpoint that proxies TMDb search, letting the user find a title.
 - "Add to library" action syncs the title locally (Phase 0 path) if not already cached, then lets the user set a 1–10 rating.
 - Library page listing the user's rated titles, edit/remove rating.
 
 **Phase 2 — Streaming services**
+
 - Settings page where the user picks their subscription streaming services from a fixed list (TMDb exposes a `/watch/providers/movie` and `/tv` list endpoint — sync this as a reference table, don't hardcode).
 - Stored per-user in `user_streaming_services`.
 
 **Phase 3 — Taste profile engine**
+
 - `RecomputeUserAffinities` queued job implementing the algorithm above.
 - Dispatch on rating create/update/delete, debounced.
 - Profile page presenting the affinities in plain language and simple charts (top genres/people/keywords/decades the user favors and disfavors, with confidence indicated).
 
 **Phase 4 — Recommendations**
+
 - Scheduled command refreshing the generic (non-personalized) popular/top-rated pool used as a cold-start/diversity fallback.
 - Candidate generation service: per-user, build the personalized-query + generic-pool candidate set described above, deduped and TTL-cached.
 - Scoring service implementing the match-score algorithm against that pool, exposed via a Recommendations page: filterable, sorted list with visible match scores, streaming-service filter/badges.
 
 **Phase 5 — Polish**
+
 - TMDb attribution footer.
 - Empty/loading states for users with too few ratings for a meaningful profile (e.g. "rate at least 5 titles to see recommendations").
 - Background refresh of stale cached title data (poster/metadata can change) via the scheduler, on a much longer cadence than the watch-provider refresh in Phase 4.

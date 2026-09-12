@@ -1,10 +1,10 @@
 - Users add movies and tv shows that they have watched and give them ratings.
-  - requires api with movie and tv shows
+    - requires api with movie and tv shows
 - User optionally specifies which streaming services they have access to.
-  - requires api that lists what is available on the platforms, or if the movie/tv show apis say what streaming services the title is available on that would work too
+    - requires api that lists what is available on the platforms, or if the movie/tv show apis say what streaming services the title is available on that would work too
 - System looks for characteristics the user may value and devalue based on the ratings, which could be things like genres, themes, concepts, actors, directors, producers, composers, period (release year/decade) etc.
-  - The correlations would need some sort of confidence score or something to see how strong the correlation is compared to other correlations found
+    - The correlations would need some sort of confidence score or something to see how strong the correlation is compared to other correlations found
 - System generates a profile for the user of what they like and don't like, and presents that profile to the user
 - System presents a filterable list of movies and tv shows the user might like, optionally limited to only their streaming services
-  - The list would be derived using weights based on the confidence score from the correlations.
-  - The list items should have confidence ratings for how high of a correlation there is the to user's profile. The rating would be shown to the user and be used to sort the list so the higher items are more likely to be ones the user would like 
+    - The list would be derived using weights based on the confidence score from the correlations.
+    - The list items should have confidence ratings for how high of a correlation there is the to user's profile. The rating would be shown to the user and be used to sort the list so the higher items are more likely to be ones the user would like
