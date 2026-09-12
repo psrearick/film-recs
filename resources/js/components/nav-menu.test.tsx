@@ -73,4 +73,32 @@ describe('NavMenu', () => {
             screen.queryByRole('link', { name: 'Register' }),
         ).not.toBeInTheDocument();
     });
+
+    it('hides the sign in link when hideLink is "login"', () => {
+        pageProps.current = { auth: { user: null } };
+
+        render(<NavMenu hideLink="login" />);
+
+        expect(
+            screen.queryByRole('link', { name: 'Sign in' }),
+        ).not.toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Register' })).toHaveAttribute(
+            'href',
+            '/register',
+        );
+    });
+
+    it('hides the register link when hideLink is "register"', () => {
+        pageProps.current = { auth: { user: null } };
+
+        render(<NavMenu hideLink="register" />);
+
+        expect(screen.getByRole('link', { name: 'Sign in' })).toHaveAttribute(
+            'href',
+            '/login',
+        );
+        expect(
+            screen.queryByRole('link', { name: 'Register' }),
+        ).not.toBeInTheDocument();
+    });
 });

@@ -3,7 +3,11 @@ import { Link } from '@inertiajs/react';
 import { ModeToggle } from '@/components/mode-toggle';
 import NavMenu from '@/components/nav-menu';
 
-export default function Navbar() {
+type NavbarProps = {
+    hideLink?: 'login' | 'register';
+};
+
+export default function Navbar({ hideLink }: NavbarProps) {
     return (
         <nav className="bg-background h-16 border-b">
             <div className="mx-auto flex h-full max-w-(--breakpoint-xl) items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -13,7 +17,7 @@ export default function Navbar() {
                     </Link>
                 </div>
                 <div className="flex items-center justify-between">
-                    <NavMenu />
+                    <NavMenu hideLink={hideLink} />
                     <ModeToggle />
                 </div>
             </div>

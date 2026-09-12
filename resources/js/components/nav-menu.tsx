@@ -7,7 +7,11 @@ import {
 import { Link, usePage } from '@inertiajs/react';
 import { logout, login, register } from '@/routes';
 
-export default function NavMenu() {
+type NavMenuProps = {
+    hideLink?: 'login' | 'register';
+};
+
+export default function NavMenu({ hideLink }: NavMenuProps) {
     const { auth } = usePage().props;
     return (
         <NavigationMenu>
@@ -22,16 +26,20 @@ export default function NavMenu() {
                     </NavigationMenuItem>
                 ) : (
                     <>
-                        <NavigationMenuItem>
-                            <NavigationMenuLink asChild>
-                                <Link href={login()}>Sign in</Link>
-                            </NavigationMenuLink>
-                        </NavigationMenuItem>
-                        <NavigationMenuItem>
-                            <NavigationMenuLink asChild>
-                                <Link href={register()}>Register</Link>
-                            </NavigationMenuLink>
-                        </NavigationMenuItem>
+                        {hideLink !== 'login' && (
+                            <NavigationMenuItem>
+                                <NavigationMenuLink asChild>
+                                    <Link href={login()}>Sign in</Link>
+                                </NavigationMenuLink>
+                            </NavigationMenuItem>
+                        )}
+                        {hideLink !== 'register' && (
+                            <NavigationMenuItem>
+                                <NavigationMenuLink asChild>
+                                    <Link href={register()}>Register</Link>
+                                </NavigationMenuLink>
+                            </NavigationMenuItem>
+                        )}
                     </>
                 )}
             </NavigationMenuList>

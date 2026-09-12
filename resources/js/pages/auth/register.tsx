@@ -16,7 +16,7 @@ export default function Register() {
         <>
             <div className="flex min-h-screen flex-col items-center lg:justify-center">
                 <div className="w-full opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
-                    <Navbar />
+                    <Navbar hideLink="register" />
                     <main className="mt-12 flex w-full flex-col items-center p-6 lg:p-8">
                         <div className="w-full max-w-xl">
                             <Card>
