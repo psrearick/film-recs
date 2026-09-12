@@ -57,6 +57,15 @@ export default function Login() {
                                             name="password"
                                             placeholder="Password"
                                         />
+                                        <label htmlFor="remember">
+                                            <input
+                                                className="mr-2"
+                                                type="checkbox"
+                                                id="remember"
+                                                name="remember"
+                                            />
+                                            Remember me
+                                        </label>
                                         <button
                                             className="rounded-lg bg-black p-2 text-white hover:bg-gray-800 focus:bg-gray-700 focus:outline-0"
                                             type="submit"
