@@ -1,9 +1,13 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vite-plus/test';
 
 const { formErrors } = vi.hoisted(() => ({
     formErrors: { current: {} as Record<string, string> },
+}));
+
+vi.mock('@/components/navbar', () => ({
+    default: () => <nav>Navbar</nav>,
 }));
 
 vi.mock('@inertiajs/react', () => ({
@@ -46,19 +50,13 @@ describe('Login page', () => {
     it('renders email and password inputs bound to the login form', () => {
         render(<Login />);
 
-        expect(screen.getByPlaceholderText('Email')).toHaveAttribute(
-            'name',
-            'email',
-        );
-        expect(screen.getByPlaceholderText('Email')).toHaveAttribute(
-            'type',
-            'email',
-        );
-        expect(screen.getByPlaceholderText('Password')).toHaveAttribute(
+        expect(screen.getByLabelText('Email')).toHaveAttribute('name', 'email');
+        expect(screen.getByLabelText('Email')).toHaveAttribute('type', 'email');
+        expect(screen.getByLabelText('Password')).toHaveAttribute(
             'name',
             'password',
         );
-        expect(screen.getByPlaceholderText('Password')).toHaveAttribute(
+        expect(screen.getByLabelText('Password')).toHaveAttribute(
             'type',
             'password',
         );
@@ -92,12 +90,24 @@ describe('Login page', () => {
         ).not.toBeInTheDocument();
     });
 
-    it('links to the registration page', () => {
-        render(<Login />);
+    it('includes the remember-me value on submit only when checked', () => {
+        const { container } = render(<Login />);
+        const form = container.querySelector('form') as HTMLFormElement;
+        const checkbox = screen.getByRole('checkbox', {
+            name: 'Remember me',
+        });
 
-        expect(screen.getByRole('link', { name: 'Register' })).toHaveAttribute(
-            'href',
-            '/register',
-        );
+        let submitted: FormData | undefined;
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            submitted = new FormData(form);
+        });
+
+        fireEvent.submit(form);
+        expect(submitted?.has('remember')).toBe(false);
+
+        fireEvent.click(checkbox);
+        fireEvent.submit(form);
+        expect(submitted?.get('remember')).toBe('on');
     });
 });

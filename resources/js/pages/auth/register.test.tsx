@@ -6,6 +6,10 @@ const { formErrors } = vi.hoisted(() => ({
     formErrors: { current: {} as Record<string, string> },
 }));
 
+vi.mock('@/components/navbar', () => ({
+    default: () => <nav>Navbar</nav>,
+}));
+
 vi.mock('@inertiajs/react', () => ({
     Link: ({
         href,
@@ -46,23 +50,14 @@ describe('Register page', () => {
     it('renders name, email, password, and confirmation inputs bound to the register form', () => {
         render(<Register />);
 
-        expect(screen.getByPlaceholderText('Name')).toHaveAttribute(
-            'name',
-            'name',
-        );
-        expect(screen.getByPlaceholderText('Email')).toHaveAttribute(
-            'name',
-            'email',
-        );
-        expect(screen.getByPlaceholderText('Email')).toHaveAttribute(
-            'type',
-            'email',
-        );
-        expect(screen.getByPlaceholderText('Password')).toHaveAttribute(
+        expect(screen.getByLabelText('Name')).toHaveAttribute('name', 'name');
+        expect(screen.getByLabelText('Email')).toHaveAttribute('name', 'email');
+        expect(screen.getByLabelText('Email')).toHaveAttribute('type', 'email');
+        expect(screen.getByLabelText('Password')).toHaveAttribute(
             'name',
             'password',
         );
-        expect(screen.getByPlaceholderText('Confirm Password')).toHaveAttribute(
+        expect(screen.getByLabelText('Confirm Password')).toHaveAttribute(
             'name',
             'password_confirmation',
         );
@@ -102,14 +97,5 @@ describe('Register page', () => {
         expect(
             screen.queryByText(/required|already been taken|does not match/i),
         ).not.toBeInTheDocument();
-    });
-
-    it('links to the login page', () => {
-        render(<Register />);
-
-        expect(screen.getByRole('link', { name: 'Login' })).toHaveAttribute(
-            'href',
-            '/login',
-        );
     });
 });
