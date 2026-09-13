@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Http\Integrations\TmdbClient;
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
@@ -15,7 +17,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(TmdbClient::class, fn () => new TmdbClient(
+            Config::string('services.tmdb.token'),
+            Config::string('services.tmdb.base_url'),
+        ));
     }
 
     /**
