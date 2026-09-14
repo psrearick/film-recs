@@ -1,10 +1,5 @@
-- Users add movies and tv shows that they have watched and give them ratings.
-    - requires api with movie and tv shows
-- User optionally specifies which streaming services they have access to.
-    - requires api that lists what is available on the platforms, or if the movie/tv show apis say what streaming services the title is available on that would work too
-- System looks for characteristics the user may value and devalue based on the ratings, which could be things like genres, themes, concepts, actors, directors, producers, composers, period (release year/decade) etc.
-    - The correlations would need some sort of confidence score or something to see how strong the correlation is compared to other correlations found
-- System generates a profile for the user of what they like and don't like, and presents that profile to the user
-- System presents a filterable list of movies and tv shows the user might like, optionally limited to only their streaming services
-    - The list would be derived using weights based on the confidence score from the correlations.
-    - The list items should have confidence ratings for how high of a correlation there is the to user's profile. The rating would be shown to the user and be used to sort the list so the higher items are more likely to be ones the user would like
+The user adds movies and TV shows that they have watched and rate them. They optionally specify which streaming services they have access to.
+
+The system identifies characteristics the user may value based on their ratings, such as genres, themes, concepts, actors, directors, producers, composers, and release year or decade. Each correlation should have a confidence score indicating its relative strength compared with the other correlations found. The system generates a profile of the user's preferences and presents it to the user.
+
+The system presents a filterable list of movies and TV shows the user might like, optionally restricted to titles available through the user's streaming services. The titles are weighted according to the confidence scores of their correlations. The list items have confidence ratings indicating how strongly each item correlates with the user's profile. The ratings would be shown to the user and be used to sort the list so that items with higher ratings are more likely to match the user's preferences.

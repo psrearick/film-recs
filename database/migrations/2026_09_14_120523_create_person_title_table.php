@@ -1,0 +1,31 @@
+<?php
+
+use App\Enums\CreditType;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('person_title', function (Blueprint $table) {
+            $table->foreignId('person_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('title_id')->constrained()->cascadeOnDelete();
+            $table->enum('credit_type', CreditType::cases());
+
+            $table->primary(['person_id', 'title_id', 'credit_type']);
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('person_title');
+    }
+};

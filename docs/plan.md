@@ -34,9 +34,10 @@ New Eloquent models/tables (names indicative, refine during implementation):
 - `titles` — local cache of a TMDb movie or show. `tmdb_id`, `type` (movie/tv), `name`, `release_year`, `overview`, `poster_path`, `runtime`, TMDb `popularity`/`vote_average` (useful as a fallback signal and for candidate ranking), `metadata_fetched_at`.
 - `genres`, `people` (actors/directors/producers/composers — one table with a `role` on the pivot, since TMDb's `credits` endpoint returns both cast and crew against the same person id), `keywords` — reference tables synced from TMDb, keyed by `tmdb_id`.
 - `title_genre`, `title_person` (with `credit_type`: cast/director/producer/composer), `title_keyword` — pivots linking a title to its attributes.
+- `watch_providers`
 - `title_watch_providers` — `title_id`, `provider_id`, `provider_name`, `region`, `access_type` (subscription/rent/buy), `fetched_at`. Tracked separately from `titles.metadata_fetched_at` and refreshed on a much shorter TTL (e.g. 24–48 hours vs. effectively-permanent for genres/cast/crew), since streaming availability changes far more often than the rest of a title's metadata.
 - `ratings` — `user_id`, `title_id`, `score` (1–10), timestamps. Unique on (`user_id`, `title_id`).
-- `user_streaming_services` — `user_id`, `provider_id`, `provider_name`.
+- `user_watch_providers` — `user_id`, `provider_id`, `provider_name`.
 - `user_attribute_affinities` — the computed taste profile: `user_id`, `attribute_type` (genre/person/keyword/decade), `attribute_id` (nullable for decade, which is just a value), `attribute_value` (for decade), `affinity_score` (signed, how much the user over/under-rates this attribute vs. their own average), `confidence`, `sample_size`, `computed_at`. Recomputed whenever ratings change (see below).
 
 Rationale for caching TMDb data locally instead of querying live: the correlation engine needs to join ratings against attributes repeatedly (recomputing profiles, scoring every candidate title), which is impractical against a remote API. It also lets recommendation candidates be pulled from the local cache with plain Eloquent/SQL rather than one TMDb call per candidate.
