@@ -209,3 +209,16 @@ Use Wayfinder to generate TypeScript functions for Laravel routes. Import from `
 - IMPORTANT: Activate `inertia-react-development` when working with Inertia React client-side patterns.
 
 </laravel-boost-guidelines>
+
+## Project-Specific Notes
+
+### Frontend tooling runs on the host, not Sail
+
+- `node_modules` holds macOS (darwin-arm64) native bindings and must be installed with a plain host `npm install`, never `vendor/bin/sail npm install`. Running npm through Sail reinstalls `node_modules` (and rewrites `package-lock.json`) with Linux bindings, which breaks every native frontend command (`npm run check`, `types:check`, `test`, `audit`) until it's reinstalled on the host again.
+- Only PHP commands (`vendor/bin/sail composer run test`, `vendor/bin/sail artisan ...`) go through Sail. JS/TS commands (`npm run ...`) run directly on the host.
+- If a frontend command fails with a "Cannot find native binding" / missing `@voidzero-dev/vite-plus-*` error, check whether `node_modules` was last installed via Sail (`ls node_modules/@voidzero-dev` — it should contain a `darwin-arm64` package, not `linux-arm64-gnu`) and fix it with a plain `npm install` on the host.
+
+### Always run `./check` after making changes
+
+- After any change (frontend or backend), run `./check` from the project root and ensure it passes completely before considering the work done. It runs `composer audit`, `npm run audit`, `npm run check`, `npm run types:check`, `npm run test`, and `vendor/bin/sail composer run test` (pint, phpstan, pest).
+- Fix any failures it reports rather than leaving them for the user.
