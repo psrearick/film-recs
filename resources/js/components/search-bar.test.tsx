@@ -9,11 +9,14 @@ import {
     vi,
 } from 'vite-plus/test';
 
-const { routerVisit, getMock, processingState } = vi.hoisted(() => ({
-    routerVisit: vi.fn(),
-    getMock: vi.fn(),
-    processingState: { current: false },
-}));
+const { routerVisit, getMock, cancelMock, processingState } = vi.hoisted(
+    () => ({
+        routerVisit: vi.fn(),
+        getMock: vi.fn(),
+        cancelMock: vi.fn(),
+        processingState: { current: false },
+    }),
+);
 
 vi.mock('@inertiajs/react', () => ({
     router: { visit: routerVisit },
@@ -25,6 +28,7 @@ vi.mock('@inertiajs/react', () => ({
             setData: (key: keyof typeof initial, value: string) =>
                 setDataState((prev) => ({ ...prev, [key]: value })),
             get: getMock,
+            cancel: cancelMock,
             processing: processingState.current,
         };
     },
@@ -35,30 +39,6 @@ vi.mock('@/components/ui/popover', () => ({
     PopoverTrigger: ({ children }: { children: ReactNode }) => <>{children}</>,
     PopoverContent: ({ children }: { children: ReactNode }) => (
         <div>{children}</div>
-    ),
-}));
-
-vi.mock('@/components/ui/command', () => ({
-    Command: ({ children }: { children: ReactNode }) => <div>{children}</div>,
-    CommandList: ({ children }: { children: ReactNode }) => (
-        <div>{children}</div>
-    ),
-    CommandEmpty: ({ children }: { children: ReactNode }) => (
-        <div>{children}</div>
-    ),
-    CommandGroup: ({ children }: { children: ReactNode }) => (
-        <div>{children}</div>
-    ),
-    CommandItem: ({
-        children,
-        onSelect,
-    }: {
-        children: ReactNode;
-        onSelect?: () => void;
-    }) => (
-        <div role="option" onClick={onSelect}>
-            {children}
-        </div>
     ),
 }));
 
@@ -76,6 +56,7 @@ describe('SearchBar', () => {
     beforeEach(() => {
         vi.useFakeTimers();
         getMock.mockReset();
+        cancelMock.mockReset();
         routerVisit.mockReset();
         processingState.current = false;
 

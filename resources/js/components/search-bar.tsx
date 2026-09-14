@@ -1,7 +1,8 @@
 import { router, useHttp } from '@inertiajs/react';
+import { Command as CommandPrimitive } from 'cmdk';
 import debounce from 'lodash.debounce';
 import { Search, Loader2 } from 'lucide-react';
-import { Input } from '@/components/ui/input';
+import { cn } from 'cn';
 import {
     Command,
     CommandEmpty,
@@ -15,7 +16,7 @@ import {
     PopoverTrigger,
 } from '@/components/ui/popover';
 import { search } from '@/routes';
-import { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 interface SearchResult {
     id: number;
@@ -33,7 +34,7 @@ export default function SearchBar() {
     const [open, setOpen] = useState(false);
     const [results, setResults] = useState<SearchResult[]>([]);
 
-    const { data, setData, get, processing } = useHttp<
+    const { data, setData, get, cancel, processing } = useHttp<
         { search: string },
         SearchResponse
     >({
@@ -43,7 +44,8 @@ export default function SearchBar() {
     const debouncedSearch = useMemo(
         () =>
             debounce(() => {
-                void get(search.url(), {
+                cancel();
+                get(search.url(), {
                     onSuccess: (response) => {
                         setResults(response.results);
                         setOpen(response.results.length > 0);
@@ -52,21 +54,35 @@ export default function SearchBar() {
                         setResults([]);
                         setOpen(false);
                     },
+                    onHttpException: () => {
+                        setResults([]);
+                        setOpen(false);
+                    },
+                    onNetworkError: () => {
+                        setResults([]);
+                        setOpen(false);
+                    },
+                }).catch(() => {
+                    // Cancellation and handled errors above already
+                    // updated state; nothing left to do here.
                 });
             }, 300),
-        [get],
+        [get, cancel],
     );
 
     useEffect(() => {
-        return () => debouncedSearch.cancel();
-    }, [debouncedSearch]);
+        return () => {
+            debouncedSearch.cancel();
+            cancel();
+        };
+    }, [debouncedSearch, cancel]);
 
-    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
+    const handleSearchChange = (value: string) => {
         setData('search', value);
 
         if (!value.trim()) {
             debouncedSearch.cancel();
+            cancel();
             setResults([]);
             setOpen(false);
         } else {
@@ -81,36 +97,40 @@ export default function SearchBar() {
 
     return (
         <div className="mx-auto w-full max-w-lg">
-            <Popover
-                open={open && data.search.length > 0}
-                onOpenChange={setOpen}
+            <Command
+                shouldFilter={false}
+                className="overflow-visible bg-transparent p-0"
             >
-                <PopoverTrigger asChild>
-                    <div className="relative w-full">
-                        {processing ? (
-                            <Loader2 className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4 animate-spin" />
-                        ) : (
-                            <Search className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
-                        )}
-                        <Input
-                            type="search"
-                            placeholder="Search for a movie, tv show, or person..."
-                            value={data.search}
-                            onChange={handleInputChange}
-                            onFocus={() => {
-                                if (results.length > 0) setOpen(true);
-                            }}
-                            className="w-full pl-9"
-                        />
-                    </div>
-                </PopoverTrigger>
-
-                <PopoverContent
-                    className="w-(--radix-popover-trigger-width) p-0"
-                    align="start"
-                    onOpenAutoFocus={(e) => e.preventDefault()}
+                <Popover
+                    open={open && data.search.length > 0}
+                    onOpenChange={setOpen}
                 >
-                    <Command shouldFilter={false}>
+                    <PopoverTrigger asChild>
+                        <div className="relative w-full">
+                            {processing ? (
+                                <Loader2 className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4 animate-spin" />
+                            ) : (
+                                <Search className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
+                            )}
+                            <CommandPrimitive.Input
+                                value={data.search}
+                                onValueChange={handleSearchChange}
+                                placeholder="Search for a movie, tv show, or person..."
+                                onFocus={() => {
+                                    if (results.length > 0) setOpen(true);
+                                }}
+                                className={cn(
+                                    'border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 h-8 w-full min-w-0 rounded-lg border bg-transparent px-2.5 py-1 pl-9 text-base transition-colors outline-none focus-visible:ring-3 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
+                                )}
+                            />
+                        </div>
+                    </PopoverTrigger>
+
+                    <PopoverContent
+                        className="w-(--radix-popover-trigger-width) p-0"
+                        align="start"
+                        onOpenAutoFocus={(e) => e.preventDefault()}
+                    >
                         <CommandList>
                             {results.length === 0 && !processing && (
                                 <CommandEmpty>No results found.</CommandEmpty>
@@ -131,9 +151,9 @@ export default function SearchBar() {
                                 </CommandGroup>
                             )}
                         </CommandList>
-                    </Command>
-                </PopoverContent>
-            </Popover>
+                    </PopoverContent>
+                </Popover>
+            </Command>
         </div>
     );
 }

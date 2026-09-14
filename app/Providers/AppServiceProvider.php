@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Http\Integrations\TmdbClient;
+use App\Integrations\TmdbClient;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Date;

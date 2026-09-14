@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Integrations;
+namespace App\Integrations;
 
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
