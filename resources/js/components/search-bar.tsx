@@ -12,11 +12,11 @@ import {
 } from '@/components/ui/command';
 import {
     Popover,
+    PopoverAnchor,
     PopoverContent,
-    PopoverTrigger,
 } from '@/components/ui/popover';
 import { search } from '@/routes';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 interface SearchResult {
     id: number;
@@ -33,6 +33,7 @@ interface SearchResponse {
 export default function SearchBar() {
     const [open, setOpen] = useState(false);
     const [results, setResults] = useState<SearchResult[]>([]);
+    const anchorRef = useRef<HTMLDivElement>(null);
 
     const { data, setData, get, cancel, processing } = useHttp<
         { search: string },
@@ -105,8 +106,8 @@ export default function SearchBar() {
                     open={open && data.search.length > 0}
                     onOpenChange={setOpen}
                 >
-                    <PopoverTrigger asChild>
-                        <div className="relative w-full">
+                    <PopoverAnchor asChild>
+                        <div ref={anchorRef} className="relative w-full">
                             {processing ? (
                                 <Loader2 className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4 animate-spin" />
                             ) : (
@@ -124,12 +125,17 @@ export default function SearchBar() {
                                 )}
                             />
                         </div>
-                    </PopoverTrigger>
+                    </PopoverAnchor>
 
                     <PopoverContent
                         className="w-(--radix-popover-trigger-width) p-0"
                         align="start"
                         onOpenAutoFocus={(e) => e.preventDefault()}
+                        onInteractOutside={(e) => {
+                            if (anchorRef.current?.contains(e.target as Node)) {
+                                e.preventDefault();
+                            }
+                        }}
                     >
                         <CommandList>
                             {results.length === 0 && !processing && (

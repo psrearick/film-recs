@@ -36,7 +36,7 @@ vi.mock('@inertiajs/react', () => ({
 
 vi.mock('@/components/ui/popover', () => ({
     Popover: ({ children }: { children: ReactNode }) => <>{children}</>,
-    PopoverTrigger: ({ children }: { children: ReactNode }) => <>{children}</>,
+    PopoverAnchor: ({ children }: { children: ReactNode }) => <>{children}</>,
     PopoverContent: ({ children }: { children: ReactNode }) => (
         <div>{children}</div>
     ),
