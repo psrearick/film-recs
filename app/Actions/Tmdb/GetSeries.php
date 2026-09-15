@@ -14,7 +14,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
-readonly class GetMovie
+readonly class GetSeries
 {
     public function __construct(
         private TmdbClient $tmdb,
@@ -29,70 +29,69 @@ readonly class GetMovie
      */
     public function get(int $id): ?Title
     {
-        $movie = Title::query()->where('tmdb_id', $id)->where('type', TitleType::Movie)->first();
+        $series = Title::query()->where('tmdb_id', $id)->where('type', TitleType::Tv)->first();
 
-        if (! $movie || $movie->is_stale) {
-            $movie = $this->fetchAndSyncMovie($id, $movie);
+        if (! $series || $series->is_stale) {
+            $series = $this->fetchAndSyncSeries($id, $series);
         }
 
-        return $movie?->load(['genres', 'keywords', 'actors', 'directors', 'producers', 'composers', 'watchProviders']);
+        return $series?->load(['genres', 'keywords', 'actors', 'directors', 'producers', 'composers', 'watchProviders']);
     }
 
     /**
      * @throws Throwable
      */
-    private function fetchAndSyncMovie(int $id, ?Title $movie): ?Title
+    private function fetchAndSyncSeries(int $id, ?Title $series): ?Title
     {
         try {
-            $data = $this->tmdb->movie($id);
+            $data = $this->tmdb->series($id);
         } catch (RequestException $e) {
-            if ($e->response->status() === 404) {
-                return $movie;
+            if ($e->response->status() !== 404) {
+                return $series;
             }
 
             throw $e;
         }
 
         if (! is_int($data->get('id'))) {
-            return $movie;
+            return $series;
         }
 
-        $providersData = $this->tmdb->movieProviders($id);
+        $providersData = $this->tmdb->seriesProviders($id);
 
-        return DB::transaction(function () use ($data, $providersData, $movie) {
-            $movie = $this->saveMovie($data, $movie);
+        return DB::transaction(function () use ($data, $providersData, $series) {
+            $series = $this->saveSeries($data, $series);
 
-            $this->syncTitleGenres->sync($movie, $data->get('genres'));
-            $this->syncTitleCredits->sync($movie, $data->get('credits'));
-            $this->syncTitleKeywords->sync($movie, $data->get('keywords'));
-            $this->syncTitleWatchProviders->sync($movie, $providersData);
+            $this->syncTitleGenres->sync($series, $data->get('genres'));
+            $this->syncTitleCredits->sync($series, $data->get('aggregate_credits'));
+            $this->syncTitleKeywords->sync($series, $data->get('keywords'));
+            $this->syncTitleWatchProviders->sync($series, $providersData);
 
-            return $movie;
+            return $series;
         });
     }
 
     /**
      * @param  Collection<string, mixed>  $data
      */
-    private function saveMovie(Collection $data, ?Title $movie): Title
+    private function saveSeries(Collection $data, ?Title $series): Title
     {
         $attributes = [
             'tmdb_id' => $data->get('id'),
-            'type' => TitleType::Movie,
-            'name' => $data->get('title'),
-            'release_year' => $this->releaseYear($data->get('release_date')),
+            'type' => TitleType::Tv,
+            'name' => $data->get('name'),
+            'release_year' => $this->releaseYear($data->get('first_air_date')),
             'overview' => $data->get('overview'),
             'poster_path' => $data->get('poster_path'),
-            'runtime' => $data->get('runtime'),
             'popularity' => $data->get('popularity'),
             'vote_average' => $data->get('vote_average'),
             'metadata_fetched_at' => now(),
         ];
 
-        if ($movie) {
-            $movie->update($attributes);
+        if ($series) {
+            $series->update($attributes);
 
-            return $movie;
+            return $series;
         }
 
         return Title::create($attributes);

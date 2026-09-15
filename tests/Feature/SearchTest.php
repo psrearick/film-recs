@@ -50,7 +50,7 @@ test('a search returns normalized movie, tv, and person results', function () {
                 'type' => 'tv',
                 'label' => 'Breaking Bad',
                 'posterPath' => '/bb.jpg',
-                'url' => '/tv/1396',
+                'url' => '/series/1396',
             ],
             [
                 'id' => 287,

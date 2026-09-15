@@ -64,7 +64,7 @@ readonly class TmdbClient
      */
     public function series(int $id): Collection
     {
-        return $this->request()->get("/tv/{$id}?append_to_response=credits")->collect();
+        return $this->request()->get("/tv/{$id}?append_to_response=aggregate_credits,keywords")->collect();
     }
 
     /**

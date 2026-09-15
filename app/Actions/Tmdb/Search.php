@@ -58,7 +58,7 @@ readonly class Search
                 'type' => 'tv',
                 'label' => $this->toStringOrDefault($result['name'] ?? $result['original_name'] ?? null, 'Untitled'),
                 'posterPath' => $this->toNullableString($result['poster_path'] ?? null),
-                'url' => "/tv/$id",
+                'url' => "/series/$id",
             ],
             'person' => [
                 'id' => $id,

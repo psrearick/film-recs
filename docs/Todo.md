@@ -1,0 +1,2 @@
+- footer
+- recommendations on series and movie pages

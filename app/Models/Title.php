@@ -6,11 +6,13 @@ use App\Enums\CreditType;
 use App\Enums\TitleType;
 use Database\Factories\TitleFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Config;
 
 /**
  * @property int $id
@@ -26,6 +28,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $metadata_fetched_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property-read bool $is_stale
  */
 #[Fillable([
     'tmdb_id',
@@ -131,5 +134,18 @@ class Title extends Model
     public function ratings(): HasMany
     {
         return $this->hasMany(Rating::class);
+    }
+
+    /**
+     * @return Attribute<bool, bool>
+     */
+    protected function isStale(): Attribute
+    {
+        $ttlDays = Config::integer('services.tmdb.metadata_ttl_days', 30);
+
+        return Attribute::make(
+            get: fn (mixed $value, array $attributes) => ! is_string($attributes['metadata_fetched_at']) ||
+                Carbon::parse($attributes['metadata_fetched_at'])->lt(now()->subDays($ttlDays)),
+        );
     }
 }
