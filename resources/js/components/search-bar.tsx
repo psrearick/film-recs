@@ -97,7 +97,7 @@ export default function SearchBar() {
     };
 
     return (
-        <div className="mx-auto w-full max-w-lg">
+        <div className="mx-auto w-full md:max-w-lg">
             <Command
                 shouldFilter={false}
                 className="overflow-visible bg-transparent p-0"

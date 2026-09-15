@@ -148,9 +148,12 @@ export default function Movie({ movie }: { movie: Movie }) {
                 <div className="flex w-full flex-col opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
                     <Navbar />
                     <main className="flex h-full w-full flex-col">
-                        <div className="flex flex-col gap-6 border-b border-gray-600 px-6 py-6 md:flex-row md:justify-between md:px-10 lg:px-16">
+                        <div className="bg-primary/20 flex flex-col gap-6 px-6 py-6 md:flex-row md:justify-between md:px-10 lg:px-16">
                             <h1 className="text-center text-4xl">
-                                {movie.name} ({movie.release_year})
+                                {movie.name}{' '}
+                                <span className="text-gray-400">
+                                    ({movie.release_year})
+                                </span>
                             </h1>
                             <div className="flex gap-6 md:w-xs">
                                 <div className="flex w-1/2 flex-col items-center text-center">
@@ -171,7 +174,7 @@ export default function Movie({ movie }: { movie: Movie }) {
                                 </div>
                             </div>
                         </div>
-                        <div className="flex flex-col gap-8 px-6 py-6 md:flex-row md:px-10 lg:px-16">
+                        <div className="bg-primary/20 flex flex-col gap-8 px-6 py-6 md:flex-row md:px-10 lg:px-16">
                             <div>
                                 {posterSrc ? (
                                     <img
@@ -220,7 +223,7 @@ export default function Movie({ movie }: { movie: Movie }) {
                         </div>
 
                         {Object.keys(providersByAccessType).length > 0 && (
-                            <div className="flex flex-col gap-6 border-y border-gray-600 px-6 py-6 md:flex-row md:gap-20 md:px-10 lg:px-16">
+                            <div className="flex flex-col gap-6 bg-gray-900/60 px-6 py-6 md:flex-row md:gap-20 md:px-10 lg:px-16">
                                 {Object.entries(providersByAccessType).map(
                                     ([accessType, providers]) => (
                                         <div
