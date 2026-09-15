@@ -42,7 +42,7 @@ readonly class TmdbClient
      */
     public function movie(int $id): Collection
     {
-        return $this->request()->get("/movie/{$id}?append_to_response=credits")->collect();
+        return $this->request()->get("/movie/{$id}?append_to_response=credits,keywords")->collect();
     }
 
     /**

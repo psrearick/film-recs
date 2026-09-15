@@ -38,6 +38,7 @@ return [
     'tmdb' => [
         'token' => env('TMDB_READ_ACCESS_TOKEN', ''),
         'base_url' => env('TMDB_BASE_URL', 'https://api.themoviedb.org/3'),
+        'metadata_ttl_days' => env('TMDB_METADATA_TTL_DAYS', 30),
     ],
 
 ];

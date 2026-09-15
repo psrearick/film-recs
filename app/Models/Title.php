@@ -81,7 +81,7 @@ class Title extends Model
     public function people(): BelongsToMany
     {
         return $this->belongsToMany(Person::class, 'person_title')
-            ->withPivot('credit_type');
+            ->withPivot(['credit_type', 'character']);
     }
 
     /**
