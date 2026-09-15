@@ -148,12 +148,12 @@ export default function Movie({ movie }: { movie: Movie }) {
                 <div className="flex w-full flex-col opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
                     <Navbar />
                     <main className="flex h-full w-full flex-col">
-                        <div className="flex justify-between border-b border-gray-600 px-6 py-6 md:px-10 lg:px-16">
-                            <h1 className="text-4xl">
+                        <div className="flex flex-col gap-6 border-b border-gray-600 px-6 py-6 md:flex-row md:justify-between md:px-10 lg:px-16">
+                            <h1 className="text-center text-4xl">
                                 {movie.name} ({movie.release_year})
                             </h1>
-                            <div className="flex justify-end gap-6">
-                                <div className="flex flex-col items-center">
+                            <div className="flex gap-6 md:w-xs">
+                                <div className="flex w-1/2 flex-col items-center text-center">
                                     <p className="text-xs text-gray-400 uppercase">
                                         Average Rating
                                     </p>
@@ -163,7 +163,7 @@ export default function Movie({ movie }: { movie: Movie }) {
                                             : '—'}
                                     </p>
                                 </div>
-                                <div className="flex flex-col items-center">
+                                <div className="flex w-1/2 flex-col items-center">
                                     <p className="text-xs text-gray-400 uppercase">
                                         Runtime
                                     </p>
@@ -171,11 +171,11 @@ export default function Movie({ movie }: { movie: Movie }) {
                                 </div>
                             </div>
                         </div>
-                        <div className="flex gap-8 px-6 py-6 md:px-10 lg:px-16">
+                        <div className="flex flex-col gap-8 px-6 py-6 md:flex-row md:px-10 lg:px-16">
                             <div>
                                 {posterSrc ? (
                                     <img
-                                        className="w-64"
+                                        className="mx-auto w-64"
                                         src={posterSrc}
                                         alt=""
                                     />
@@ -220,7 +220,7 @@ export default function Movie({ movie }: { movie: Movie }) {
                         </div>
 
                         {Object.keys(providersByAccessType).length > 0 && (
-                            <div className="border-t border-gray-600 px-6 py-6 md:px-10 lg:px-16">
+                            <div className="flex flex-col gap-6 border-y border-gray-600 px-6 py-6 md:flex-row md:gap-20 md:px-10 lg:px-16">
                                 {Object.entries(providersByAccessType).map(
                                     ([accessType, providers]) => (
                                         <div
@@ -254,8 +254,8 @@ export default function Movie({ movie }: { movie: Movie }) {
                             </div>
                         )}
 
-                        <PersonList title="Cast" people={cast} />
                         <PersonList title="Crew" people={crew} />
+                        <PersonList title="Cast" people={cast} />
                     </main>
                 </div>
             </div>
