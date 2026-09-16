@@ -22,7 +22,7 @@ const Person = ({
             <div className="bg-primary/20 flex flex-col items-center gap-6 px-6 py-6 md:flex-row md:justify-between md:px-10 lg:px-16">
                 <h1 className="text-4xl">{person.name}</h1>
                 <div className="flex flex-col items-center gap-1">
-                    <p className="text-xs text-gray-400 uppercase">
+                    <p className="text-accent-foreground text-xs uppercase">
                         Average Rating
                     </p>
 
@@ -56,7 +56,7 @@ const Person = ({
                 {castCredits.length > 0 && (
                     <>
                         <h2 className="mb-6 text-xl">Acting Credits</h2>
-                        <div className="flex flex-wrap gap-6">
+                        <div className="flex flex-wrap gap-4">
                             {castCredits.map((credit) => (
                                 <Card
                                     key={`${credit.media_type}-${credit.tmdb_id}`}
@@ -83,7 +83,7 @@ const Person = ({
                                         <p className="text-sm">
                                             {credit.title}
                                         </p>
-                                        <p className="text-xs text-gray-400">
+                                        <p className="text-accent-foreground text-xs">
                                             {credit.character}
                                         </p>
                                     </CardContent>

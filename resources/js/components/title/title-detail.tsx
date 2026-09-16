@@ -57,8 +57,8 @@ export default function TitleDetail({
                     )}
                 </div>
             </div>
-            <div className="bg-primary/20 flex flex-col gap-8 px-6 py-6 md:flex-row md:px-10 lg:px-16">
-                <div className="mx-auto w-64">
+            <div className="bg-primary/20 flex flex-col gap-8 px-6 py-6 md:flex-row md:justify-between md:px-10 lg:px-16">
+                <div className="mx-auto w-64 md:mx-0">
                     <TitlePoster
                         path={title.poster_path}
                         name={title.name}
@@ -67,7 +67,7 @@ export default function TitleDetail({
                         imageSize="w500"
                     />
                 </div>
-                <div className="w-full max-w-md">
+                <div className="w-full max-w-md md:max-w-2/3">
                     {title.overview}
 
                     {title.genres.length > 0 && (

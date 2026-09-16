@@ -19,6 +19,12 @@ export default function Layout({
                     <Navbar hideLink={hideNavbarLink} />
                     {children}
                 </div>
+                <div className="flex h-10 w-full items-center border-t">
+                    <p className="text-muted-foreground mx-auto text-sm">
+                        &copy; {new Date().getFullYear()} FilmRecs. All rights
+                        reserved.
+                    </p>
+                </div>
             </div>
         </>
     );

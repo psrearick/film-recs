@@ -1,2 +1,3 @@
 - footer
 - recommendations on series and movie pages
+- Break the person average rating down into roles - average actor, director, producer, writer, composer, etc.

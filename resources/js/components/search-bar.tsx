@@ -93,6 +93,7 @@ export default function SearchBar() {
 
     const handleSelect = (result: SearchResult) => {
         setOpen(false);
+        data.search = '';
         router.visit(result.url);
     };
 
