@@ -10,11 +10,32 @@ export interface Keyword {
 
 export interface Person {
     id: number;
+    tmdb_id: number;
     name: string;
     profile_path: string | null;
     pivot?: {
         character?: string | null;
     };
+}
+
+export interface PersonCredit {
+    tmdb_id: number;
+    media_type: 'movie' | 'tv';
+    title: string;
+    poster_path: string | null;
+    release_year: number | null;
+    character: string | null;
+    job: string | null;
+    vote_average: number | null;
+}
+
+export interface PersonProfile {
+    id: number;
+    tmdb_id: number;
+    name: string;
+    biography: string | null;
+    profile_path: string | null;
+    average_vote_average: number | null;
 }
 
 export interface WatchProvider {

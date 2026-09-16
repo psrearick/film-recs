@@ -1,6 +1,7 @@
-import { LucideIcon } from 'lucide-react';
+import { LucideIcon, Star } from 'lucide-react';
 import PersonList from '@/components/title/person-list';
-import { Title, tmdbImage } from '@/components/title/types';
+import TitlePoster from '@/components/title/title-poster';
+import { Title } from '@/components/title/types';
 import WatchProviders from '@/components/title/watch-providers';
 
 export default function TitleDetail({
@@ -21,8 +22,6 @@ export default function TitleDetail({
         ...title.composers.map((person) => ({ ...person, role: 'Composer' })),
     ];
 
-    const posterSrc = tmdbImage(title.poster_path, 'w500');
-
     return (
         <main className="flex h-full w-full flex-col">
             <div className="bg-primary/20 flex flex-col gap-6 px-6 py-6 md:flex-row md:justify-between md:px-10 lg:px-16">
@@ -37,11 +36,16 @@ export default function TitleDetail({
                         <p className="text-xs text-gray-400 uppercase">
                             Average Rating
                         </p>
-                        <p>
-                            {title.vote_average !== null
-                                ? title.vote_average.toFixed(1)
-                                : '—'}
-                        </p>
+                        {title.vote_average !== null ? (
+                            <div className="flex items-center gap-2">
+                                <Star className="fill-foreground h-5" />
+                                <p className="text-xl">
+                                    {title.vote_average.toFixed(1)}
+                                </p>
+                            </div>
+                        ) : (
+                            <p>—</p>
+                        )}
                     </div>
                     {title.runtime && (
                         <div className="flex w-1/2 flex-col items-center">
@@ -54,14 +58,14 @@ export default function TitleDetail({
                 </div>
             </div>
             <div className="bg-primary/20 flex flex-col gap-8 px-6 py-6 md:flex-row md:px-10 lg:px-16">
-                <div>
-                    {posterSrc ? (
-                        <img className="mx-auto w-64" src={posterSrc} alt="" />
-                    ) : (
-                        <div className="flex aspect-2/3 w-64 items-center justify-center bg-gray-800">
-                            <PosterIcon className="text-gray-500" size={48} />
-                        </div>
-                    )}
+                <div className="mx-auto w-64">
+                    <TitlePoster
+                        path={title.poster_path}
+                        name={title.name}
+                        icon={PosterIcon}
+                        iconSize={48}
+                        imageSize="w500"
+                    />
                 </div>
                 <div className="w-full max-w-md">
                     {title.overview}

@@ -31,7 +31,7 @@ readonly class TmdbClient
      */
     public function person(int $id): Collection
     {
-        return $this->request()->get("/person/{$id}")->collect();
+        return $this->request()->get("/person/{$id}?append_to_response=movie_credits,tv_credits")->collect();
     }
 
     /**

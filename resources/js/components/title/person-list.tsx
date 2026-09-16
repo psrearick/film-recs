@@ -1,6 +1,8 @@
 import PersonAvatar from '@/components/title/person-avatar';
 import { Person } from '@/components/title/types';
 import { Card, CardContent } from '@/components/ui/card';
+import { person as personRoute } from '@/routes';
+import { Link } from '@inertiajs/react';
 
 export default function PersonList({
     title,
@@ -23,10 +25,12 @@ export default function PersonList({
                         size="sm"
                         className="w-32"
                     >
-                        <PersonAvatar
-                            path={person.profile_path}
-                            name={person.name}
-                        />
+                        <Link href={personRoute(person.tmdb_id)}>
+                            <PersonAvatar
+                                path={person.profile_path}
+                                name={person.name}
+                            />
+                        </Link>
                         <CardContent>
                             <p className="text-sm">{person.name}</p>
                             {person.role && (
