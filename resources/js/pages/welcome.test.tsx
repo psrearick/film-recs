@@ -1,21 +1,26 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vite-plus/test';
 
-vi.mock('@inertiajs/react', () => ({
-    Head: () => null,
+const { setLayoutProps } = vi.hoisted(() => ({
+    setLayoutProps: vi.fn(),
 }));
 
-vi.mock('@/components/navbar', () => ({
-    default: () => <nav>Navbar</nav>,
+vi.mock('@inertiajs/react', () => ({
+    setLayoutProps,
 }));
 
 import Welcome from './welcome';
 
 describe('Welcome page', () => {
-    it('renders the navbar and a welcome message', () => {
+    it('renders a welcome message', () => {
         render(<Welcome />);
 
-        expect(screen.getByRole('navigation')).toBeInTheDocument();
         expect(screen.getByText('Welcome')).toBeInTheDocument();
+    });
+
+    it('sets the page title via layout props', () => {
+        render(<Welcome />);
+
+        expect(setLayoutProps).toHaveBeenCalledWith({ title: 'Welcome' });
     });
 });

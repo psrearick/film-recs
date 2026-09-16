@@ -6,11 +6,8 @@ const { formErrors } = vi.hoisted(() => ({
     formErrors: { current: {} as Record<string, string> },
 }));
 
-vi.mock('@/components/navbar', () => ({
-    default: () => <nav>Navbar</nav>,
-}));
-
 vi.mock('@inertiajs/react', () => ({
+    setLayoutProps: vi.fn(),
     Link: ({
         href,
         children,
