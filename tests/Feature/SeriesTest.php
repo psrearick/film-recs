@@ -3,6 +3,7 @@
 use App\Enums\TitleType;
 use App\Models\Title;
 use Illuminate\Support\Facades\Http;
+use PHPUnit\Framework\Assert;
 
 function fakeTmdbSeries(int $id, array $overrides = []): void
 {
@@ -122,4 +123,92 @@ test('a new series is fetched from tmdb and persisted with its related data', fu
     expect($series->composers()->pluck('name')->all())->toBe(['Michael Giacchino']);
 
     expect($series->watchProviders()->pluck('name')->all())->toBe(['Hulu']);
+});
+
+test('an up to date series is served from the database without calling tmdb', function () {
+    $series = Title::factory()->tv()->create([
+        'tmdb_id' => 4607,
+        'metadata_fetched_at' => now(),
+    ]);
+
+    Http::fake([
+        config('services.tmdb.base_url').'/*' => function () {
+            Assert::fail('Unexpected TMDB request.');
+        },
+    ]);
+
+    $response = $this->get(route('series', 4607));
+
+    $response->assertOk();
+
+    $response->assertInertia(fn ($page) => $page->where('series.id', $series->id));
+});
+
+test('a stale series is refreshed from tmdb', function () {
+    $series = Title::factory()->tv()->create([
+        'tmdb_id' => 4607,
+        'name' => 'Old Name',
+        'metadata_fetched_at' => now()->subDays(60),
+    ]);
+
+    fakeTmdbSeries(4607);
+
+    $response = $this->get(route('series', 4607));
+
+    $response->assertOk();
+
+    Http::assertSent(fn ($request) => str_contains((string) $request->url(), '/tv/4607?append_to_response=aggregate_credits,keywords'));
+
+    $series->refresh();
+
+    expect($series->name)->toBe('Lost');
+    expect($series->genres()->count())->toBe(2);
+});
+
+test('a failed watch provider refresh rolls back the whole series sync', function () {
+    $series = Title::factory()->tv()->create([
+        'tmdb_id' => 4607,
+        'name' => 'Old Name',
+        'metadata_fetched_at' => now()->subDays(60),
+    ]);
+
+    $originalFetchedAt = $series->metadata_fetched_at;
+
+    Http::fake([
+        config('services.tmdb.base_url').'/tv/4607?append_to_response=aggregate_credits,keywords' => Http::response([
+            'id' => 4607,
+            'name' => 'Lost',
+            'first_air_date' => '2004-09-22',
+            'genres' => [],
+            'aggregate_credits' => ['cast' => [], 'crew' => []],
+            'keywords' => ['results' => []],
+        ]),
+        config('services.tmdb.base_url').'/tv/4607/watch/providers' => Http::response(
+            ['status_message' => 'Internal Server Error'],
+            500,
+        ),
+    ]);
+
+    $response = $this->get(route('series', 4607));
+
+    $response->assertStatus(500);
+
+    $series->refresh();
+
+    expect($series->name)->toBe('Old Name');
+    expect($series->metadata_fetched_at)->toEqual($originalFetchedAt);
+});
+
+test('an unknown series returns a 404', function () {
+    Http::fake([
+        config('services.tmdb.base_url').'/tv/*' => Http::response([
+            'success' => false,
+            'status_code' => 34,
+            'status_message' => 'The resource you requested could not be found.',
+        ], 404),
+    ]);
+
+    $response = $this->get(route('series', 999999));
+
+    $response->assertNotFound();
 });

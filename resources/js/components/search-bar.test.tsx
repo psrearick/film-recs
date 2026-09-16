@@ -155,4 +155,79 @@ describe('SearchBar', () => {
 
         expect(container.querySelector('.animate-spin')).toBeInTheDocument();
     });
+
+    it('clears results when a subsequent search request errors', () => {
+        render(<SearchBar />);
+        const input = screen.getByPlaceholderText(/search for a movie/i);
+
+        fireEvent.change(input, { target: { value: 'matrix' } });
+        act(() => {
+            vi.advanceTimersByTime(300);
+        });
+        expect(screen.getByText('The Matrix')).toBeInTheDocument();
+
+        getMock.mockImplementation(
+            (_url: string, options: { onError?: () => void }) => {
+                options.onError?.();
+                return Promise.resolve({ results: [] });
+            },
+        );
+
+        fireEvent.change(input, { target: { value: 'matrix2' } });
+        act(() => {
+            vi.advanceTimersByTime(300);
+        });
+
+        expect(screen.queryByText('The Matrix')).not.toBeInTheDocument();
+    });
+
+    it('clears results when a subsequent request fails with an http exception', () => {
+        render(<SearchBar />);
+        const input = screen.getByPlaceholderText(/search for a movie/i);
+
+        fireEvent.change(input, { target: { value: 'matrix' } });
+        act(() => {
+            vi.advanceTimersByTime(300);
+        });
+        expect(screen.getByText('The Matrix')).toBeInTheDocument();
+
+        getMock.mockImplementation(
+            (_url: string, options: { onHttpException?: () => void }) => {
+                options.onHttpException?.();
+                return Promise.resolve({ results: [] });
+            },
+        );
+
+        fireEvent.change(input, { target: { value: 'matrix2' } });
+        act(() => {
+            vi.advanceTimersByTime(300);
+        });
+
+        expect(screen.queryByText('The Matrix')).not.toBeInTheDocument();
+    });
+
+    it('clears results when a subsequent request fails with a network error', () => {
+        render(<SearchBar />);
+        const input = screen.getByPlaceholderText(/search for a movie/i);
+
+        fireEvent.change(input, { target: { value: 'matrix' } });
+        act(() => {
+            vi.advanceTimersByTime(300);
+        });
+        expect(screen.getByText('The Matrix')).toBeInTheDocument();
+
+        getMock.mockImplementation(
+            (_url: string, options: { onNetworkError?: () => void }) => {
+                options.onNetworkError?.();
+                return Promise.resolve({ results: [] });
+            },
+        );
+
+        fireEvent.change(input, { target: { value: 'matrix2' } });
+        act(() => {
+            vi.advanceTimersByTime(300);
+        });
+
+        expect(screen.queryByText('The Matrix')).not.toBeInTheDocument();
+    });
 });

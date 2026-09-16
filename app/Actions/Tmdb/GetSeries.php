@@ -46,7 +46,7 @@ readonly class GetSeries
         try {
             $data = $this->tmdb->series($id);
         } catch (RequestException $e) {
-            if ($e->response->status() !== 404) {
+            if ($e->response->status() === 404) {
                 return $series;
             }
 

@@ -33,11 +33,11 @@ class GetPerson
         try {
             $personData = $isStale
                 ? $this->tmdb->person($id)
-                : Cache::remember(
+                : collect(Cache::remember(
                     "tmdb-person-{$id}",
                     now()->addDays(Config::integer('services.tmdb.metadata_ttl_days', 30)),
-                    fn () => $this->tmdb->person($id),
-                );
+                    fn () => $this->tmdb->person($id)->all(),
+                ));
         } catch (RequestException $e) {
             if ($e->response->status() !== 404) {
                 throw $e;
