@@ -47,6 +47,16 @@ export interface WatchProvider {
     };
 }
 
+export interface PopularTitle {
+    tmdb_id: number;
+    name: string;
+    release_year: number | null;
+    overview: string | null;
+    poster_path: string | null;
+    popularity: number;
+    vote_average: number | null;
+}
+
 export interface Title {
     id: number;
     name: string;

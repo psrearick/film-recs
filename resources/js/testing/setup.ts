@@ -10,6 +10,16 @@ class ResizeObserverStub {
 
 globalThis.ResizeObserver ??= ResizeObserverStub;
 
+// jsdom does not implement matchMedia. Components that only need a stable
+// default (rather than to assert on a specific breakpoint) can rely on this;
+// tests exercising breakpoint-dependent behavior override it themselves.
+window.matchMedia ??= ((query: string) => ({
+    matches: false,
+    media: query,
+    addEventListener: () => {},
+    removeEventListener: () => {},
+})) as typeof window.matchMedia;
+
 // Node's experimental global `localStorage` shadows jsdom's working
 // implementation and only stubs the interface without persisting or
 // implementing any of its methods, so components using localStorage

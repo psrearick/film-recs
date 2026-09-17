@@ -25,6 +25,10 @@ export default function TitlePoster({
     }
 
     return (
-        <img className="aspect-2/3 w-full object-cover" src={src} alt={name} />
+        <img
+            className="aspect-2/3 w-full object-contain"
+            src={src}
+            alt={name}
+        />
     );
 }

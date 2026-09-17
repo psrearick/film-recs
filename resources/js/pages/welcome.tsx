@@ -1,13 +1,21 @@
 import { Link, setLayoutProps, usePage } from '@inertiajs/react';
 import { login, register } from '@/routes';
 import { Button } from '@/components/ui/button';
+import TitleRow from '@/components/title/title-row';
+import { PopularTitle } from '@/components/title/types';
 
-export default function Welcome() {
+export default function Welcome({
+    movies,
+    series,
+}: {
+    movies: PopularTitle[];
+    series: PopularTitle[];
+}) {
     setLayoutProps({ title: 'Welcome' });
     const { auth } = usePage().props;
 
     return (
-        <main className="flex h-full w-full">
+        <main className="flex h-full w-full flex-col">
             <div
                 className="flex w-full flex-col items-center bg-amber-800/90 bg-cover bg-center py-32 bg-blend-multiply"
                 style={{ backgroundImage: "url('./film-strips.jpeg')" }}
@@ -27,6 +35,8 @@ export default function Welcome() {
                     </div>
                 ) : null}
             </div>
+            <TitleRow title="Popular Movies" titles={movies} type="movie" />
+            <TitleRow title="Popular TV Shows" titles={series} type="series" />
         </main>
     );
 }

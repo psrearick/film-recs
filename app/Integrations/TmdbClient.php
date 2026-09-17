@@ -78,6 +78,26 @@ readonly class TmdbClient
         return $this->request()->get("/tv/{$id}/watch/providers")->collect();
     }
 
+    /**
+     * @return Collection<string, mixed>
+     *
+     * @throws ConnectionException
+     */
+    public function popularMovies(): Collection
+    {
+        return $this->request()->get('/discover/movie?page=1&sort_by=popularity.desc&vote_count.gte=500')->collect();
+    }
+
+    /**
+     * @return Collection<string, mixed>
+     *
+     * @throws ConnectionException
+     */
+    public function popularSeries(): Collection
+    {
+        return $this->request()->get('/discover/tv?page=1&sort_by=popularity.desc&vote_count.gte=500')->collect();
+    }
+
     private function request(): PendingRequest
     {
         return Http::baseUrl($this->baseUrl)
