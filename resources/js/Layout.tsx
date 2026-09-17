@@ -15,7 +15,7 @@ export default function Layout({
         <>
             <Head title={title} />
             <div className="flex min-h-screen flex-col items-center lg:justify-center">
-                <div className="flex w-full flex-col opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
+                <div className="flex w-full grow flex-col opacity-100 transition-opacity duration-750 starting:opacity-0">
                     <Navbar hideLink={hideNavbarLink} />
                     {children}
                 </div>
