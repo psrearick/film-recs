@@ -33,7 +33,7 @@ const person: PersonProfile = {
     name: 'Keanu Reeves',
     biography: 'Canadian actor.',
     profile_path: '/keanu.jpg',
-    average_vote_average: 8.2,
+    vote_averages: [{ job: 'Average', vote_average: 8.2, count: 1 }],
 };
 
 const castCredit: PersonCredit = {
@@ -68,18 +68,15 @@ describe('Person page', () => {
     it('shows the average rating when present', () => {
         render(<Person person={person} credits={[]} />);
 
-        expect(screen.getByText('8.2')).toBeInTheDocument();
+        expect(screen.getAllByText('8.2').length).toEqual(2);
     });
 
     it('shows a dash when there is no average rating', () => {
         render(
-            <Person
-                person={{ ...person, average_vote_average: null }}
-                credits={[]}
-            />,
+            <Person person={{ ...person, vote_averages: [] }} credits={[]} />,
         );
 
-        expect(screen.getByText('—')).toBeInTheDocument();
+        expect(screen.getAllByText('—').length).toEqual(2);
     });
 
     it('lists credits with a character under acting credits', () => {

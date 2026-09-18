@@ -53,7 +53,8 @@ test('a new person is fetched from tmdb, persisted, and queued for credit sync',
 
     $response->assertInertia(fn ($page) => $page
         ->where('person.name', 'Keanu Reeves')
-        ->where('person.average_vote_average', 8.2)
+        ->where('person.vote_averages', fn ($voteAverages) => $voteAverages
+            ->firstWhere('job', 'Average')['vote_average'] === 8.2)
         ->where('credits.0.title', 'The Matrix')
         ->where('credits.0.character', 'Neo')
     );
@@ -148,7 +149,8 @@ test('a 404 from tmdb falls back to locally known credits for an existing person
     $response->assertOk();
     $response->assertInertia(fn ($page) => $page
         ->where('person.name', 'Keanu Reeves')
-        ->where('person.average_vote_average', 8.2)
+        ->where('person.vote_averages', fn ($voteAverages) => $voteAverages
+            ->firstWhere('job', 'Average')['vote_average'] === 8.2)
         ->where('credits.0.title', 'The Matrix')
         ->where('credits.0.character', 'Neo')
     );

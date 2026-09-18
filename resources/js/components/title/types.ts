@@ -29,13 +29,19 @@ export interface PersonCredit {
     vote_average: number | null;
 }
 
+export interface VoteAverage {
+    job: string;
+    vote_average: number | null;
+    count: number;
+}
+
 export interface PersonProfile {
     id: number;
     tmdb_id: number;
     name: string;
     biography: string | null;
     profile_path: string | null;
-    average_vote_average: number | null;
+    vote_averages: VoteAverage[];
 }
 
 export interface WatchProvider {

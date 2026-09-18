@@ -66,7 +66,7 @@ class GetPerson
             ->merge($this->creditRows($tvCredits, TitleType::Tv))
             ->all();
 
-        $personArray = [...$person->toArray(), 'average_vote_average' => $this->averageVoteAverage($credits)];
+        $personArray = [...$person->toArray(), 'vote_averages' => $this->averageVoteAverage($credits)];
 
         return ['person' => $personArray, 'credits' => $credits];
     }
@@ -86,7 +86,7 @@ class GetPerson
         $credits = $this->localCredits($person);
 
         return [
-            'person' => [...$person->toArray(), 'average_vote_average' => $this->averageVoteAverage($credits)],
+            'person' => [...$person->toArray(), 'vote_averages' => $this->averageVoteAverage($credits)],
             'credits' => $credits,
         ];
     }
@@ -129,15 +129,42 @@ class GetPerson
 
     /**
      * @param  array<int, array{tmdb_id: int, media_type: string, title: string, poster_path: ?string, release_year: ?int, character: ?string, job: ?string, vote_average: ?float}>  $credits
+     * @return array<int, array{vote_average: ?float, job: string, count: int}>
      */
-    private function averageVoteAverage(array $credits): ?float
+    private function averageVoteAverage(array $credits): array
     {
-        $votes = collect($credits)
+        $creditsCollection = collect($credits)->filter(fn (array $credit) => $credit['vote_average'] !== null && $credit['vote_average'] > 0);
+
+        $votes = $creditsCollection
             ->unique(fn (array $credit) => $credit['media_type'].'-'.$credit['tmdb_id'])
             ->pluck('vote_average')
             ->filter(fn (mixed $vote): bool => $vote !== null && $vote !== '' && $vote > 0);
 
-        return $votes->isEmpty() ? null : round((float) $votes->average(), 1);
+        return $creditsCollection
+            ->map(function (array $credit) {
+                $credit['job'] = $credit['job'] ?? 'Actor';
+
+                return $credit;
+            })->mapToGroups(function (array $credit) {
+                return [$credit['job'] => $credit['vote_average']];
+            })->map(function (Collection $creditGroup): array {
+                return [
+                    'vote_average' => $creditGroup->isEmpty() ? null : (float) $creditGroup->average(),
+                    'count' => $creditGroup->count(),
+                ];
+            })
+            ->map(fn (array $jobAverage, string $job): array => [
+                'vote_average' => $jobAverage['vote_average'],
+                'job' => $job,
+                'count' => $jobAverage['count'],
+            ])
+            ->push([
+                'vote_average' => $votes->isEmpty() ? null : round((float) $votes->average(), 1),
+                'job' => 'Average',
+                'count' => $creditsCollection->count(),
+            ])
+            ->values()
+            ->all();
     }
 
     /**
