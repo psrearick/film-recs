@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 
 /**
@@ -29,6 +30,7 @@ use Illuminate\Support\Facades\Config;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read bool $is_stale
+ * @property-read int|null $user_rating
  */
 #[Fillable([
     'tmdb_id',
@@ -134,6 +136,24 @@ class Title extends Model
     public function ratings(): HasMany
     {
         return $this->hasMany(Rating::class);
+    }
+
+    /**
+     * @return Attribute<int|null, never>
+     */
+    protected function userRating(): Attribute
+    {
+        return Attribute::make(
+            get: function (): ?int {
+                if (! Auth::check()) {
+                    return null;
+                }
+
+                $score = $this->ratings()->where('user_id', Auth::id())->value('score');
+
+                return is_numeric($score) ? (int) $score : null;
+            },
+        );
     }
 
     /**

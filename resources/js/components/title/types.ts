@@ -72,6 +72,7 @@ export interface Title {
     runtime: number | null;
     popularity: number;
     vote_average: number | null;
+    user_rating?: number | null;
     genres: Genre[];
     keywords: Keyword[];
     actors: Person[];

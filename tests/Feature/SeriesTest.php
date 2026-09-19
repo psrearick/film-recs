@@ -1,7 +1,9 @@
 <?php
 
 use App\Enums\TitleType;
+use App\Models\Rating;
 use App\Models\Title;
+use App\Models\User;
 use Illuminate\Support\Facades\Http;
 use PHPUnit\Framework\Assert;
 
@@ -142,6 +144,19 @@ test('an up to date series is served from the database without calling tmdb', fu
     $response->assertOk();
 
     $response->assertInertia(fn ($page) => $page->where('series.id', $series->id));
+});
+
+test('the authenticated user\'s rating is included on the series page', function () {
+    $series = Title::factory()->tv()->create([
+        'tmdb_id' => 4607,
+        'metadata_fetched_at' => now(),
+    ]);
+    $user = User::factory()->create();
+    Rating::factory()->for($series)->for($user)->create(['score' => 9]);
+
+    $response = $this->actingAs($user)->get(route('series', 4607));
+
+    $response->assertInertia(fn ($page) => $page->where('series.user_rating', 9));
 });
 
 test('a stale series is refreshed from tmdb', function () {

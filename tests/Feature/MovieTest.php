@@ -3,7 +3,9 @@
 use App\Enums\CreditType;
 use App\Enums\TitleType;
 use App\Models\Person;
+use App\Models\Rating;
 use App\Models\Title;
+use App\Models\User;
 use Illuminate\Support\Facades\Http;
 use PHPUnit\Framework\Assert;
 
@@ -114,6 +116,19 @@ test('an up to date movie is served from the database without calling tmdb', fun
     $response->assertOk();
 
     $response->assertInertia(fn ($page) => $page->where('movie.id', $movie->id));
+});
+
+test('the authenticated user\'s rating is included on the movie page', function () {
+    $movie = Title::factory()->movie()->create([
+        'tmdb_id' => 603,
+        'metadata_fetched_at' => now(),
+    ]);
+    $user = User::factory()->create();
+    Rating::factory()->for($movie)->for($user)->create(['score' => 6]);
+
+    $response = $this->actingAs($user)->get(route('movie', 603));
+
+    $response->assertInertia(fn ($page) => $page->where('movie.user_rating', 6));
 });
 
 test('a stale movie is refreshed from tmdb', function () {

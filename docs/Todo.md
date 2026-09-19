@@ -1,1 +1,2 @@
 - recommendations on series and movie pages
+- Add trending people, series, and movies

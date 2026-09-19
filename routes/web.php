@@ -5,6 +5,7 @@ use App\Http\Controllers\MovieController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SeriesController;
+use App\Http\Controllers\TitleRatingController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -12,3 +13,7 @@ Route::get('/search', [SearchController::class, 'index'])->name('search');
 Route::get('/movies/{id}', [MovieController::class, 'show'])->name('movie');
 Route::get('/series/{id}', [SeriesController::class, 'show'])->name('series');
 Route::get('/people/{id}', [PersonController::class, 'show'])->name('person');
+Route::middleware('auth')->group(function () {
+    Route::post('/titles/{title}/rating', [TitleRatingController::class, 'store'])->name('rating');
+    Route::delete('/titles/{title}/rating', [TitleRatingController::class, 'destroy'])->name('rating.destroy');
+});

@@ -15,7 +15,7 @@ export default function Welcome({
     const { auth } = usePage().props;
 
     return (
-        <main className="flex h-full w-full flex-col">
+        <main className="flex h-full w-full flex-col pb-4">
             <div
                 className="flex w-full flex-col items-center bg-amber-800/90 bg-cover bg-center py-32 bg-blend-multiply"
                 style={{ backgroundImage: "url('./film-strips.jpeg')" }}

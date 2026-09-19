@@ -24,7 +24,7 @@ class MovieController extends Controller
         }
 
         return Inertia::render('movie', [
-            'movie' => $movie,
+            'movie' => $movie->append('user_rating'),
         ]);
     }
 }

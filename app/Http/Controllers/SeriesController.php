@@ -24,7 +24,7 @@ class SeriesController extends Controller
         }
 
         return Inertia::render('series', [
-            'series' => $series,
+            'series' => $series->append('user_rating'),
         ]);
     }
 }
