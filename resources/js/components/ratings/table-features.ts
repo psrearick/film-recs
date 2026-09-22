@@ -24,6 +24,7 @@ export const features = tableFeatures({
     sortedRowModel: createSortedRowModel(),
     filterFns: { includesString: filterFn_includesString },
     sortFns: { alphanumeric: sortFn_alphanumeric, text: sortFn_text },
+    columnMeta: {} as { className?: string },
 });
 
 export type RatingsTableFeatures = typeof features;

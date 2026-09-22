@@ -24,7 +24,7 @@ export default function Ratings({ ratings }: { ratings: Rating[] }) {
             <div className="mx-auto my-8 w-full max-w-7xl">
                 <h1 className="font-heading text-4xl">Your Ratings</h1>
             </div>
-            <div className="mx-auto w-full max-w-7xl">
+            <div className="mx-auto w-full max-w-7xl px-4">
                 <RatingsDataTable columns={columns} data={data} />
             </div>
         </main>

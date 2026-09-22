@@ -62,7 +62,7 @@ export function RatingsDataTable<TData extends RowData>({
     return (
         <div className="flex flex-col gap-4">
             <div className="overflow-hidden rounded-md border">
-                <Table>
+                <Table className="lg:table-fixed">
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow
@@ -71,7 +71,13 @@ export function RatingsDataTable<TData extends RowData>({
                             >
                                 {headerGroup.headers.map((header) => {
                                     return (
-                                        <TableHead key={header.id}>
+                                        <TableHead
+                                            key={header.id}
+                                            className={
+                                                header.column.columnDef.meta
+                                                    ?.className
+                                            }
+                                        >
                                             {header.isPlaceholder ? null : (
                                                 <table.FlexRender
                                                     header={header}

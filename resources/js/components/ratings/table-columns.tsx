@@ -23,8 +23,13 @@ const columnHelper = createColumnHelper<RatingsTableFeatures, Rating>();
 
 export const columns = columnHelper.columns([
     columnHelper.accessor('title', {
+        meta: { className: 'lg:w-[28%]' },
         header: ({ column }) => (
-            <RatingsTableSortableHeader column={column} label="Title" />
+            <RatingsTableSortableHeader
+                column={column}
+                label="Title"
+                align="left"
+            />
         ),
         cell: ({ row }) => {
             const route = row.getValue('type') === 'Movie' ? movie : series;
@@ -32,7 +37,7 @@ export const columns = columnHelper.columns([
             return (
                 <Link
                     href={route(row.original.tmdb_id)}
-                    className="block text-center"
+                    className="block truncate"
                 >
                     {row.getValue('title')}
                 </Link>
@@ -40,6 +45,7 @@ export const columns = columnHelper.columns([
         },
     }),
     columnHelper.accessor('type', {
+        meta: { className: 'lg:w-[10%]' },
         header: ({ column }) => (
             <RatingsTableSortableHeader column={column} label="Type" />
         ),
@@ -50,6 +56,7 @@ export const columns = columnHelper.columns([
         ),
     }),
     columnHelper.accessor('release_year', {
+        meta: { className: 'lg:w-[12%]' },
         header: ({ column }) => (
             <RatingsTableSortableHeader column={column} label="Release Year" />
         ),
@@ -60,6 +67,7 @@ export const columns = columnHelper.columns([
         ),
     }),
     columnHelper.accessor('score', {
+        meta: { className: 'lg:w-[14%]' },
         header: ({ column }) => (
             <RatingsTableSortableHeader column={column} label="Your Rating" />
         ),
@@ -73,20 +81,22 @@ export const columns = columnHelper.columns([
         ),
     }),
     columnHelper.accessor('vote_average', {
+        meta: { className: 'lg:w-[14%]' },
         header: ({ column }) => (
             <RatingsTableSortableHeader
                 column={column}
                 label="Average Rating"
-                align="right"
+                align="center"
             />
         ),
         cell: ({ row }) => (
-            <div className="text-right font-medium">
+            <div className="text-center font-medium">
                 {row.getValue('vote_average')}
             </div>
         ),
     }),
     columnHelper.accessor('updated_at', {
+        meta: { className: 'lg:w-[16%]' },
         header: ({ column }) => (
             <RatingsTableSortableHeader
                 column={column}
@@ -106,6 +116,7 @@ export const columns = columnHelper.columns([
     }),
     columnHelper.display({
         id: 'actions',
+        meta: { className: 'lg:w-[6%]' },
         header: () => <span className="sr-only">Actions</span>,
         cell: ({ row }) => (
             <div className="flex justify-end">
