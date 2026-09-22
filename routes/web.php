@@ -3,6 +3,7 @@
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\PersonController;
+use App\Http\Controllers\RatingsController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SeriesController;
 use App\Http\Controllers\TitleRatingController;
@@ -16,4 +17,5 @@ Route::get('/people/{id}', [PersonController::class, 'show'])->name('person');
 Route::middleware('auth')->group(function () {
     Route::post('/titles/{title}/rating', [TitleRatingController::class, 'store'])->name('rating');
     Route::delete('/titles/{title}/rating', [TitleRatingController::class, 'destroy'])->name('rating.destroy');
+    Route::get('/ratings', [RatingsController::class, 'index'])->name('ratings');
 });

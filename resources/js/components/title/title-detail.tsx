@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { LucideIcon, Star } from 'lucide-react';
 import { Form, Link, router, usePage } from '@inertiajs/react';
-import { cn } from 'cn';
 import { login, register, rating } from '@/routes';
 import { destroy as destroyRating } from '@/routes/rating';
 import PersonList from '@/components/title/person-list';
 import TitlePoster from '@/components/title/title-poster';
 import { Title } from '@/components/title/types';
 import WatchProviders from '@/components/title/watch-providers';
+import StarRatingPicker from '@/components/star-rating-picker';
 import {
     Dialog,
     DialogClose,
@@ -18,8 +18,6 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-
-const RATING_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 export default function TitleDetail({
     title,
@@ -34,7 +32,6 @@ export default function TitleDetail({
     const [selectedRating, setSelectedRating] = useState(initialRating);
     const [hoverRating, setHoverRating] = useState(0);
     const [clearing, setClearing] = useState(false);
-    const displayedRating = hoverRating || selectedRating;
 
     function handleOpenChange(open: boolean) {
         if (!open) {
@@ -123,35 +120,13 @@ export default function TitleDetail({
                                 >
                                     {({ processing }) => (
                                         <>
-                                            <div
-                                                className="mb-4 flex justify-center gap-1 py-6"
-                                                onMouseLeave={() =>
-                                                    setHoverRating(0)
-                                                }
-                                            >
-                                                {RATING_VALUES.map((value) => (
-                                                    <Star
-                                                        key={value}
-                                                        className={cn(
-                                                            'h-5 cursor-pointer transition-colors',
-                                                            value <=
-                                                                displayedRating
-                                                                ? 'fill-amber-400 text-amber-400'
-                                                                : 'text-muted-foreground',
-                                                        )}
-                                                        onMouseEnter={() =>
-                                                            setHoverRating(
-                                                                value,
-                                                            )
-                                                        }
-                                                        onClick={() =>
-                                                            setSelectedRating(
-                                                                value,
-                                                            )
-                                                        }
-                                                    />
-                                                ))}
-                                            </div>
+                                            <StarRatingPicker
+                                                value={selectedRating}
+                                                hoverValue={hoverRating}
+                                                onHover={setHoverRating}
+                                                onSelect={setSelectedRating}
+                                                className="mb-4 py-6"
+                                            />
                                             <input
                                                 type="hidden"
                                                 name="score"

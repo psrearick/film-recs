@@ -27,6 +27,7 @@ import Series from './series';
 const series: Title = {
     id: 1,
     name: 'Lost',
+    tmdb_id: 4589,
     release_year: 2004,
     overview: 'Survivors of a plane crash.',
     poster_path: '/lost.jpg',

@@ -5,7 +5,8 @@ import {
     NavigationMenuList,
 } from '@/components/ui/navigation-menu';
 import { Link, usePage } from '@inertiajs/react';
-import { logout, login, register } from '@/routes';
+import { login, register } from '@/routes';
+import NavbarAccountPopover from '@/components/navbar-account-popover';
 
 type NavMenuProps = {
     hideLink?: 'login' | 'register';
@@ -18,11 +19,7 @@ export default function NavMenu({ hideLink }: NavMenuProps) {
             <NavigationMenuList>
                 {auth.user ? (
                     <NavigationMenuItem>
-                        <NavigationMenuLink asChild>
-                            <Link href={logout()} method="post" as="button">
-                                Logout
-                            </Link>
-                        </NavigationMenuLink>
+                        <NavbarAccountPopover />
                     </NavigationMenuItem>
                 ) : (
                     <>

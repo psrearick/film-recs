@@ -21,11 +21,11 @@ export function ModeToggle() {
     return (
         <Button
             variant="ghost"
-            size="icon"
+            size="icon-lg"
             aria-label={`Switch theme (currently ${theme})`}
             onClick={() => setTheme(nextTheme[theme])}
         >
-            <Icon />
+            <Icon className="size-5" />
         </Button>
     );
 }

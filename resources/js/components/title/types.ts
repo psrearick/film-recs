@@ -66,6 +66,7 @@ export interface PopularTitle {
 export interface Title {
     id: number;
     name: string;
+    tmdb_id: number;
     release_year: number | null;
     overview: string | null;
     poster_path: string | null;
@@ -73,6 +74,7 @@ export interface Title {
     popularity: number;
     vote_average: number | null;
     user_rating?: number | null;
+    type?: 'movie' | 'tv';
     genres: Genre[];
     keywords: Keyword[];
     actors: Person[];
@@ -80,6 +82,13 @@ export interface Title {
     producers: Person[];
     composers: Person[];
     watch_providers: WatchProvider[];
+}
+
+export interface Rating {
+    id: number;
+    updated_at: string;
+    score: number;
+    title: Title;
 }
 
 export const ACCESS_TYPE_LABELS: Record<

@@ -60,7 +60,7 @@ export default function TitleRow({
                 </div>
                 <div className="@container grow overflow-hidden">
                     <div
-                        className="flex transition-transform duration-1000 ease-in-out"
+                        className="flex transition-transform duration-700 ease-in-out"
                         style={{ transform: `translateX(-${page * 100}cqw)` }}
                     >
                         {titles.map((item) => (
@@ -81,10 +81,10 @@ export default function TitleRow({
                                         />
                                     </Link>
                                     <CardContent>
-                                        <p className="truncate text-sm">
+                                        <p className="hidden truncate text-center text-sm md:block">
                                             {item.name}
                                         </p>
-                                        <p className="text-accent-foreground text-xs">
+                                        <p className="text-accent-foreground text-center text-xs">
                                             {item.release_year ?? '—'}
                                         </p>
                                     </CardContent>

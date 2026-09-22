@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { describe, expect, it, vi } from 'vite-plus/test';
 
@@ -62,6 +62,8 @@ describe('NavMenu', () => {
         };
 
         render(<NavMenu />);
+
+        fireEvent.click(screen.getByRole('button', { name: 'Account menu' }));
 
         const logout = screen.getByRole('button', { name: 'Logout' });
         expect(logout).toHaveAttribute('href', '/logout');
