@@ -57,7 +57,7 @@
         "jsdom": "^30.0.1",
         "knip": "^6.35.1",
         "lint-staged": "^17.5.1",
-        "vite-plus": "0.3.0"
+        "vite-plus": "0.3.1"
     },
     "optionalDependencies": {
         "@laravel/multiplex": "^0.4.1",
