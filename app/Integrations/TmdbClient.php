@@ -98,6 +98,26 @@ readonly class TmdbClient
         return $this->request()->get('/discover/tv?page=1&sort_by=popularity.desc&vote_count.gte=500')->collect();
     }
 
+    /**
+     * @return Collection<string, mixed>
+     *
+     * @throws ConnectionException
+     */
+    public function trendingMovies(): Collection
+    {
+        return $this->request()->get('/trending/movie/day')->collect();
+    }
+
+    /**
+     * @return Collection<string, mixed>
+     *
+     * @throws ConnectionException
+     */
+    public function trendingSeries(): Collection
+    {
+        return $this->request()->get('/trending/tv/day')->collect();
+    }
+
     private function request(): PendingRequest
     {
         return Http::baseUrl($this->baseUrl)

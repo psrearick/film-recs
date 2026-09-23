@@ -5,11 +5,15 @@ import TitleRow from '@/components/title/title-row';
 import { PopularTitle } from '@/components/title/types';
 
 export default function Welcome({
-    movies,
-    series,
+    popular_movies,
+    popular_series,
+    trending_movies,
+    trending_series,
 }: {
-    movies: PopularTitle[];
-    series: PopularTitle[];
+    popular_movies: PopularTitle[];
+    popular_series: PopularTitle[];
+    trending_movies: PopularTitle[];
+    trending_series: PopularTitle[];
 }) {
     setLayoutProps({ title: 'Welcome' });
     const { auth } = usePage().props;
@@ -35,8 +39,26 @@ export default function Welcome({
                     </div>
                 ) : null}
             </div>
-            <TitleRow title="Popular Movies" titles={movies} type="movie" />
-            <TitleRow title="Popular TV Shows" titles={series} type="series" />
+            <TitleRow
+                title="Popular Movies"
+                titles={popular_movies}
+                type="movie"
+            />
+            <TitleRow
+                title="Popular TV Shows"
+                titles={popular_series}
+                type="series"
+            />
+            <TitleRow
+                title="Trending Movies"
+                titles={trending_movies}
+                type="movie"
+            />
+            <TitleRow
+                title="Trending TV Shows"
+                titles={trending_series}
+                type="series"
+            />
         </main>
     );
 }

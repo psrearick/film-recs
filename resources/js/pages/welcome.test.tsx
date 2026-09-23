@@ -21,12 +21,25 @@ vi.mock('@inertiajs/react', () => ({
 
 import Welcome from './welcome';
 
-const movies: PopularTitle[] = [];
-const series: PopularTitle[] = [];
+const popularMovies: PopularTitle[] = [];
+const popularSeries: PopularTitle[] = [];
+const trendingMovies: PopularTitle[] = [];
+const trendingSeries: PopularTitle[] = [];
+
+function renderWelcome() {
+    return render(
+        <Welcome
+            popular_movies={popularMovies}
+            popular_series={popularSeries}
+            trending_movies={trendingMovies}
+            trending_series={trendingSeries}
+        />,
+    );
+}
 
 describe('Welcome page', () => {
     it('renders a welcome message', () => {
-        render(<Welcome movies={movies} series={series} />);
+        renderWelcome();
 
         expect(
             screen.getByText("Let's discover your next watch."),
@@ -34,7 +47,7 @@ describe('Welcome page', () => {
     });
 
     it('sets the page title via layout props', () => {
-        render(<Welcome movies={movies} series={series} />);
+        renderWelcome();
 
         expect(setLayoutProps).toHaveBeenCalledWith({ title: 'Welcome' });
     });

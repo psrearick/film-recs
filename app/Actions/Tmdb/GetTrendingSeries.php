@@ -2,13 +2,13 @@
 
 namespace App\Actions\Tmdb;
 
-use App\Actions\Tmdb\Traits\GetsMovies;
+use App\Actions\Tmdb\Traits\GetsSeries;
 use App\Integrations\TmdbClient;
 use Illuminate\Http\Client\ConnectionException;
 
-readonly class GetPopularMovies
+readonly class GetTrendingSeries
 {
-    use GetsMovies;
+    use GetsSeries;
 
     public function __construct(private TmdbClient $tmdb) {}
 
@@ -19,6 +19,6 @@ readonly class GetPopularMovies
      */
     public function get(): array
     {
-        return $this->getMovies($this->tmdb->popularMovies());
+        return $this->getSeries($this->tmdb->trendingSeries());
     }
 }

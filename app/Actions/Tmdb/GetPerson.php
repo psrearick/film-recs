@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
-class GetPerson
+readonly class GetPerson
 {
     public function __construct(private TmdbClient $tmdb) {}
 

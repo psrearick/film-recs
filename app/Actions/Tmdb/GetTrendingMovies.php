@@ -6,7 +6,7 @@ use App\Actions\Tmdb\Traits\GetsMovies;
 use App\Integrations\TmdbClient;
 use Illuminate\Http\Client\ConnectionException;
 
-readonly class GetPopularMovies
+readonly class GetTrendingMovies
 {
     use GetsMovies;
 
@@ -19,6 +19,6 @@ readonly class GetPopularMovies
      */
     public function get(): array
     {
-        return $this->getMovies($this->tmdb->popularMovies());
+        return $this->getMovies($this->tmdb->trendingMovies());
     }
 }
