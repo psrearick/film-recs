@@ -31,7 +31,7 @@ readonly class TmdbClient
      */
     public function person(int $id): Collection
     {
-        return $this->request()->get("/person/{$id}?append_to_response=movie_credits,tv_credits")->collect();
+        return $this->request()->get("/person/$id?append_to_response=movie_credits,tv_credits")->collect();
     }
 
     /**
@@ -42,7 +42,7 @@ readonly class TmdbClient
      */
     public function movie(int $id): Collection
     {
-        return $this->request()->get("/movie/{$id}?append_to_response=credits,keywords")->collect();
+        return $this->request()->get("/movie/$id?append_to_response=credits,keywords")->collect();
     }
 
     /**
@@ -53,7 +53,7 @@ readonly class TmdbClient
      */
     public function movieProviders(int $id): Collection
     {
-        return $this->request()->get("/movie/{$id}/watch/providers")->collect();
+        return $this->request()->get("/movie/$id/watch/providers")->collect();
     }
 
     /**
@@ -64,7 +64,7 @@ readonly class TmdbClient
      */
     public function series(int $id): Collection
     {
-        return $this->request()->get("/tv/{$id}?append_to_response=aggregate_credits,keywords")->collect();
+        return $this->request()->get("/tv/$id?append_to_response=aggregate_credits,keywords")->collect();
     }
 
     /**
@@ -75,7 +75,7 @@ readonly class TmdbClient
      */
     public function seriesProviders(int $id): Collection
     {
-        return $this->request()->get("/tv/{$id}/watch/providers")->collect();
+        return $this->request()->get("/tv/$id/watch/providers")->collect();
     }
 
     /**

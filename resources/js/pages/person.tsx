@@ -127,6 +127,9 @@ const Person = ({
                                             />
                                         </Link>
                                         <CardContent>
+                                            <div className="bg-accent mb-2 w-full rounded text-center">
+                                                <p>{credit.release_year}</p>
+                                            </div>
                                             <p className="text-sm">
                                                 {credit.title}
                                             </p>
