@@ -66,4 +66,24 @@ describe('WatchProviders', () => {
         expect(screen.getByAltText('Netflix')).toBeInTheDocument();
         expect(screen.getByAltText('Hulu')).toBeInTheDocument();
     });
+
+    it('attributes watch provider data to JustWatch', () => {
+        render(
+            <WatchProviders
+                providers={[
+                    {
+                        id: 1,
+                        name: 'Netflix',
+                        logo_path: '/netflix.jpg',
+                        pivot: { access_type: 'subscription' },
+                    },
+                ]}
+            />,
+        );
+
+        expect(screen.getByAltText('JustWatch').closest('a')).toHaveAttribute(
+            'href',
+            'https://www.justwatch.com',
+        );
+    });
 });

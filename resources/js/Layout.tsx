@@ -19,12 +19,30 @@ export default function Layout({
                     <Navbar hideLink={hideNavbarLink} />
                     {children}
                 </div>
-                <div className="flex h-10 w-full items-center border-t">
-                    <p className="text-muted-foreground mx-auto text-sm">
+                <footer className="text-muted-foreground flex w-full flex-col items-center gap-2 border-t px-4 py-3 text-center text-sm">
+                    <div className="flex flex-col items-center gap-2 sm:flex-row">
+                        <a
+                            href="https://www.themoviedb.org"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex shrink-0"
+                        >
+                            <img
+                                className="h-3"
+                                src="/tmdb-logo.svg"
+                                alt="TMDB"
+                            />
+                        </a>
+                        <p className="text-xs">
+                            This product uses the TMDB API but is not endorsed
+                            or certified by TMDB.
+                        </p>
+                    </div>
+                    <p>
                         &copy; {new Date().getFullYear()} FilmRecs. All rights
                         reserved.
                     </p>
-                </div>
+                </footer>
             </div>
         </>
     );

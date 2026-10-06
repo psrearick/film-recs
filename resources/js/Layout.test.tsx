@@ -75,4 +75,22 @@ describe('Layout', () => {
         const year = new Date().getFullYear().toString();
         expect(screen.getByText(new RegExp(year))).toBeInTheDocument();
     });
+
+    it('renders the TMDB attribution in the footer', () => {
+        render(
+            <Layout>
+                <p>Content</p>
+            </Layout>,
+        );
+
+        expect(
+            screen.getByText(
+                'This product uses the TMDB API but is not endorsed or certified by TMDB.',
+            ),
+        ).toBeInTheDocument();
+        expect(screen.getByAltText('TMDB').closest('a')).toHaveAttribute(
+            'href',
+            'https://www.themoviedb.org',
+        );
+    });
 });

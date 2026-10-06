@@ -74,13 +74,11 @@ describe('WatchProviders page', () => {
     });
 
     it('shows provider logos', () => {
-        const { container } = render(
-            <WatchProviders providers={providers} userProviderIds={[]} />,
-        );
+        render(<WatchProviders providers={providers} userProviderIds={[]} />);
 
-        const sources = Array.from(container.querySelectorAll('img')).map(
-            (img) => img.getAttribute('src'),
-        );
+        const sources = Array.from(
+            screen.getByRole('table').querySelectorAll('img'),
+        ).map((img) => img.getAttribute('src'));
 
         expect(sources).toEqual([
             'https://image.tmdb.org/t/p/w92/netflix.jpg',
@@ -154,5 +152,14 @@ describe('WatchProviders page', () => {
         expect(lastOptimisticCallback()({ userProviderIds: [1, 2] })).toEqual({
             userProviderIds: [1],
         });
+    });
+
+    it('attributes watch provider data to JustWatch', () => {
+        render(<WatchProviders providers={providers} userProviderIds={[]} />);
+
+        expect(screen.getByAltText('JustWatch').closest('a')).toHaveAttribute(
+            'href',
+            'https://www.justwatch.com',
+        );
     });
 });

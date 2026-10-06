@@ -1,6 +1,7 @@
 import { router, setLayoutProps } from '@inertiajs/react';
 import { Search } from 'lucide-react';
 import { useState } from 'react';
+import JustWatchAttribution from '@/components/title/justwatch-attribution';
 import { tmdbImage, WatchProviderBase } from '@/components/title/types';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -80,9 +81,13 @@ export default function WatchProviders({
                 </InputGroup>
                 <Table>
                     <TableHeader>
-                        <TableRow>
-                            <TableHead className="w-12">Access</TableHead>
-                            <TableHead>Provider</TableHead>
+                        <TableRow className="bg-muted/50">
+                            <TableHead className="w-12 rounded-tl-lg">
+                                Access
+                            </TableHead>
+                            <TableHead className="rounded-tr-lg">
+                                Provider
+                            </TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -143,6 +148,7 @@ export default function WatchProviders({
                         )}
                     </TableBody>
                 </Table>
+                <JustWatchAttribution />
             </div>
         </main>
     );
