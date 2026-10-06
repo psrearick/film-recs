@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { NavigationMenuLink } from '@/components/ui/navigation-menu';
 import { Link } from '@inertiajs/react';
 import { User } from 'lucide-react';
-import { logout, ratings } from '@/routes';
+import { logout, ratings, watchProviders } from '@/routes';
 import { useState } from 'react';
 
 export default function NavbarAccountPopover() {
@@ -38,6 +38,16 @@ export default function NavbarAccountPopover() {
                         as="button"
                     >
                         Your Ratings
+                    </Link>
+                </NavigationMenuLink>
+                <NavigationMenuLink asChild>
+                    <Link
+                        className="hover:cursor-pointer"
+                        onClick={closePopover}
+                        href={watchProviders()}
+                        as="button"
+                    >
+                        Your Watch Providers
                     </Link>
                 </NavigationMenuLink>
                 <NavigationMenuLink asChild>

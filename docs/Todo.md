@@ -1,2 +1,3 @@
-- recommendations on series and movie pages
+- recommendations of similar titles on series and movie pages
 - Add trending people, series, and movies
+- Go to page of a title you haven't seen, and it guesses what rating you would give it

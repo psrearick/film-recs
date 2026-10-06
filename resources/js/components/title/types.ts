@@ -44,6 +44,12 @@ export interface PersonProfile {
     vote_averages: VoteAverage[];
 }
 
+export interface WatchProviderBase {
+    id: number;
+    name: string;
+    logo_path: string | null;
+}
+
 export interface WatchProvider {
     id: number;
     name: string;

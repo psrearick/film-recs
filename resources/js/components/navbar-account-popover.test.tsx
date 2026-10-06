@@ -31,6 +31,7 @@ vi.mock('@inertiajs/react', () => ({
 vi.mock('@/routes', () => ({
     logout: () => '/logout',
     ratings: () => '/ratings',
+    watchProviders: () => '/watch-providers',
 }));
 
 import {

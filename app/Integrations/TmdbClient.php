@@ -118,6 +118,26 @@ readonly class TmdbClient
         return $this->request()->get('/trending/tv/day')->collect();
     }
 
+    /**
+     * @return Collection<string, mixed>
+     *
+     * @throws ConnectionException
+     */
+    public function allMovieProviders(): Collection
+    {
+        return $this->request()->get('/watch/providers/movie?watch_region=US')->collect();
+    }
+
+    /**
+     * @return Collection<string, mixed>
+     *
+     * @throws ConnectionException
+     */
+    public function allSeriesProviders(): Collection
+    {
+        return $this->request()->get('/watch/providers/tv?watch_region=US')->collect();
+    }
+
     private function request(): PendingRequest
     {
         return Http::baseUrl($this->baseUrl)

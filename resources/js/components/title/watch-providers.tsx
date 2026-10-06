@@ -13,6 +13,7 @@ export default function WatchProviders({
         Record<string, WatchProvider[]>
     >((groups, provider) => {
         const accessType = provider.pivot.access_type;
+
         groups[accessType] = [...(groups[accessType] ?? []), provider];
 
         return groups;
