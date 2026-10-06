@@ -110,9 +110,9 @@ export default function SearchBar() {
                     <PopoverAnchor asChild>
                         <div ref={anchorRef} className="relative w-full">
                             {processing ? (
-                                <Loader2 className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4 animate-spin" />
+                                <Loader2 className="text-muted-foreground absolute top-2 left-2.5 h-4 w-4 animate-spin" />
                             ) : (
-                                <Search className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
+                                <Search className="text-muted-foreground absolute top-2 left-2.5 h-4 w-4" />
                             )}
                             <CommandPrimitive.Input
                                 value={data.search}
@@ -122,7 +122,7 @@ export default function SearchBar() {
                                     if (results.length > 0) setOpen(true);
                                 }}
                                 className={cn(
-                                    'border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 h-8 w-full min-w-0 border bg-transparent px-2.5 py-1 pl-9 text-base transition-colors outline-none focus-visible:ring-3 disabled:cursor-not-allowed disabled:opacity-50 md:rounded-lg md:text-sm',
+                                    'border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 bg-input-background h-8 w-full min-w-0 border px-2.5 py-1 pl-9 text-base transition-colors outline-none focus-visible:ring-3 disabled:cursor-not-allowed disabled:opacity-50 md:rounded-lg md:text-sm',
                                 )}
                             />
                         </div>

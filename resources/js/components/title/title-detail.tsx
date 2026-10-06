@@ -238,7 +238,7 @@ export default function TitleDetail({
                             {title.keywords.map((keyword) => (
                                 <span
                                     key={keyword.id}
-                                    className="text-muted-foreground rounded-full bg-gray-800 px-3 py-1 text-xs"
+                                    className="text-muted-foreground bg-muted rounded-full px-3 py-1 text-xs"
                                 >
                                     {keyword.name}
                                 </span>

@@ -66,7 +66,7 @@ export default function WatchProviders({
                 <h1 className="font-heading text-4xl">Your Watch Providers</h1>
             </div>
             <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 pb-8">
-                <InputGroup>
+                <InputGroup className="bg-input-background">
                     <InputGroupAddon>
                         <Search />
                     </InputGroupAddon>
@@ -107,6 +107,7 @@ export default function WatchProviders({
                                     <TableRow key={provider.id}>
                                         <TableCell>
                                             <Checkbox
+                                                className="bg-input-background"
                                                 id={checkboxId}
                                                 checked={userProviderIds.includes(
                                                     provider.id,
