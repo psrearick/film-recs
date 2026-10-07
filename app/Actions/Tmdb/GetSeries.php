@@ -39,6 +39,18 @@ readonly class GetSeries
     }
 
     /**
+     * Fetch and sync the series from TMDB even if the local copy is not stale.
+     *
+     * @throws Throwable
+     */
+    public function refresh(int $id): ?Title
+    {
+        $series = Title::query()->where('tmdb_id', $id)->where('type', TitleType::Tv)->first();
+
+        return $this->fetchAndSyncSeries($id, $series);
+    }
+
+    /**
      * @throws Throwable
      */
     private function fetchAndSyncSeries(int $id, ?Title $series): ?Title
@@ -83,6 +95,7 @@ readonly class GetSeries
             'release_year' => $this->releaseYear($data->get('first_air_date')),
             'overview' => $data->get('overview'),
             'poster_path' => $data->get('poster_path'),
+            'episode_count' => $data->get('number_of_episodes'),
             'popularity' => $data->get('popularity'),
             'vote_average' => $data->get('vote_average'),
             'metadata_fetched_at' => now(),

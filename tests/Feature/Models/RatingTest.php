@@ -1,8 +1,14 @@
 <?php
 
+use App\Jobs\UpdateAttributeAffinities;
 use App\Models\Rating;
 use App\Models\Title;
 use App\Models\User;
+use Illuminate\Support\Facades\Queue;
+
+beforeEach(function () {
+    Queue::fake([UpdateAttributeAffinities::class]);
+});
 
 test('score is cast to an integer', function () {
     $rating = Rating::factory()->create(['score' => '9']);

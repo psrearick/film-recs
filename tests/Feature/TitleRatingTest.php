@@ -1,8 +1,14 @@
 <?php
 
+use App\Jobs\UpdateAttributeAffinities;
 use App\Models\Rating;
 use App\Models\Title;
 use App\Models\User;
+use Illuminate\Support\Facades\Queue;
+
+beforeEach(function () {
+    Queue::fake([UpdateAttributeAffinities::class]);
+});
 
 test('a guest cannot submit a rating', function () {
     $title = Title::factory()->create();
@@ -76,6 +82,20 @@ test('an authenticated user can clear their rating', function () {
 
     $response->assertRedirect();
     expect(Rating::query()->where(['user_id' => $user->id, 'title_id' => $title->id])->exists())->toBeFalse();
+});
+
+test('clearing a rating queues an affinity recompute for the user', function () {
+    $title = Title::factory()->create();
+    $user = User::factory()->create();
+    Rating::factory()->for($title)->for($user)->create();
+    Queue::fake([UpdateAttributeAffinities::class]);
+
+    $this->actingAs($user)->delete(route('rating.destroy', $title));
+
+    Queue::assertPushed(
+        UpdateAttributeAffinities::class,
+        fn (UpdateAttributeAffinities $job) => $job->userId === $user->id,
+    );
 });
 
 test('clearing a rating does not affect other users\' ratings for the same title', function () {

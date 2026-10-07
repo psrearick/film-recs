@@ -68,7 +68,7 @@ export default function TitleDetail({
         <main className="flex h-full w-full flex-col">
             <div className="bg-primary/20 flex flex-col gap-6 px-6 py-6 md:flex-row md:justify-between md:px-10 lg:px-16">
                 <div>
-                    <h1 className="mb-1 text-center text-4xl">{title.name} </h1>
+                    <h1 className="mb-1 text-4xl">{title.name} </h1>
                     <div className="flex items-center gap-2">
                         <span className="text-muted-foreground text-xs">
                             {title.release_year}

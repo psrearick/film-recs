@@ -39,6 +39,18 @@ readonly class GetMovie
     }
 
     /**
+     * Fetch and sync the movie from TMDB even if the local copy is not stale.
+     *
+     * @throws Throwable
+     */
+    public function refresh(int $id): ?Title
+    {
+        $movie = Title::query()->where('tmdb_id', $id)->where('type', TitleType::Movie)->first();
+
+        return $this->fetchAndSyncMovie($id, $movie);
+    }
+
+    /**
      * @throws Throwable
      */
     private function fetchAndSyncMovie(int $id, ?Title $movie): ?Title

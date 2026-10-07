@@ -1,11 +1,18 @@
 <?php
 
 use App\Enums\TitleType;
+use App\Jobs\UpdateAttributeAffinities;
 use App\Models\Rating;
 use App\Models\Title;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Queue;
 use PHPUnit\Framework\Assert;
+
+beforeEach(function () {
+    Queue::fake([UpdateAttributeAffinities::class]);
+});
 
 function fakeTmdbSeries(int $id, array $overrides = []): void
 {
@@ -18,6 +25,7 @@ function fakeTmdbSeries(int $id, array $overrides = []): void
             'poster_path' => '/lost.jpg',
             'popularity' => 45.3,
             'vote_average' => 8.0,
+            'number_of_episodes' => 121,
             'genres' => [
                 ['id' => 9648, 'name' => 'Mystery'],
                 ['id' => 18, 'name' => 'Drama'],
@@ -28,6 +36,8 @@ function fakeTmdbSeries(int $id, array $overrides = []): void
                         'id' => 6384,
                         'name' => 'Matthew Fox',
                         'profile_path' => '/matthew.jpg',
+                        'order' => 0,
+                        'total_episode_count' => 121,
                         'roles' => [
                             ['character' => 'Jack Shephard', 'episode_count' => 121],
                         ],
@@ -36,6 +46,8 @@ function fakeTmdbSeries(int $id, array $overrides = []): void
                         'id' => 2,
                         'name' => 'Evangeline Lilly',
                         'profile_path' => '/evangeline.jpg',
+                        'order' => 1,
+                        'total_episode_count' => 118,
                         'roles' => [
                             ['character' => 'Kate Austen', 'episode_count' => 118],
                         ],
@@ -105,6 +117,7 @@ test('a new series is fetched from tmdb and persisted with its related data', fu
 
     expect($series->name)->toBe('Lost');
     expect($series->release_year)->toBe(2004);
+    expect($series->episode_count)->toBe(121);
     expect($series->metadata_fetched_at)->not->toBeNull();
 
     expect($series->genres()->pluck('name')->sort()->values()->all())
@@ -119,6 +132,13 @@ test('a new series is fetched from tmdb and persisted with its related data', fu
     expect(
         $series->actors()->orderBy('name')->get()->pluck('pivot.character')->all()
     )->toBe(['Kate Austen', 'Jack Shephard']);
+
+    expect(DB::table('person_title')
+        ->where(['title_id' => $series->id, 'credit_type' => 'cast'])
+        ->orderBy('billing_order')
+        ->get(['billing_order', 'episode_count'])
+        ->map(fn (stdClass $credit) => [$credit->billing_order, $credit->episode_count])
+        ->all())->toBe([[0, 121], [1, 118]]);
 
     expect($series->directors()->pluck('name')->all())->toBe(['J.J. Abrams']);
     expect($series->producers()->pluck('name')->all())->toBe(['Carlton Cuse']);

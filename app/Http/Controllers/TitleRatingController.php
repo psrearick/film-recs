@@ -28,7 +28,8 @@ class TitleRatingController extends Controller
     {
         Rating::query()
             ->where(['user_id' => Auth::id(), 'title_id' => $title->id])
-            ->delete();
+            ->first()
+            ?->delete();
 
         return back();
     }

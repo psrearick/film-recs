@@ -2,12 +2,19 @@
 
 use App\Enums\CreditType;
 use App\Enums\TitleType;
+use App\Jobs\UpdateAttributeAffinities;
 use App\Models\Person;
 use App\Models\Rating;
 use App\Models\Title;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Queue;
 use PHPUnit\Framework\Assert;
+
+beforeEach(function () {
+    Queue::fake([UpdateAttributeAffinities::class]);
+});
 
 function fakeTmdbMovie(int $id, array $overrides = []): void
 {
@@ -27,8 +34,8 @@ function fakeTmdbMovie(int $id, array $overrides = []): void
             ],
             'credits' => [
                 'cast' => [
-                    ['id' => 6384, 'name' => 'Keanu Reeves', 'character' => 'Neo', 'profile_path' => '/keanu.jpg'],
-                    ['id' => 2, 'name' => 'Laurence Fishburne', 'character' => 'Morpheus', 'profile_path' => '/laurence.jpg'],
+                    ['id' => 6384, 'name' => 'Keanu Reeves', 'character' => 'Neo', 'profile_path' => '/keanu.jpg', 'order' => 0],
+                    ['id' => 2, 'name' => 'Laurence Fishburne', 'character' => 'Morpheus', 'profile_path' => '/laurence.jpg', 'order' => 1],
                 ],
                 'crew' => [
                     ['id' => 10, 'name' => 'Lana Wachowski', 'job' => 'Director', 'profile_path' => null],
@@ -88,6 +95,13 @@ test('a new movie is fetched from tmdb and persisted with its related data', fun
     expect(
         $movie->actors()->orderBy('name')->get()->pluck('pivot.character')->all()
     )->toBe(['Neo', 'Morpheus']);
+
+    expect(DB::table('person_title')
+        ->where(['title_id' => $movie->id, 'credit_type' => 'cast'])
+        ->orderBy('billing_order')
+        ->get(['billing_order', 'episode_count'])
+        ->map(fn (stdClass $credit) => [$credit->billing_order, $credit->episode_count])
+        ->all())->toBe([[0, null], [1, null]]);
 
     expect($movie->directors()->pluck('name')->sort()->values()->all())
         ->toBe(['Lana Wachowski', 'Lilly Wachowski']);

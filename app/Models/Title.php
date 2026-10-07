@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Config;
  * @property string|null $overview
  * @property string|null $poster_path
  * @property int|null $runtime
+ * @property int|null $episode_count
  * @property float|null $popularity
  * @property float|null $vote_average
  * @property Carbon|null $metadata_fetched_at
@@ -40,6 +41,7 @@ use Illuminate\Support\Facades\Config;
     'overview',
     'poster_path',
     'runtime',
+    'episode_count',
     'popularity',
     'vote_average',
     'metadata_fetched_at',

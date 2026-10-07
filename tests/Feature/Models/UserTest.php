@@ -1,9 +1,15 @@
 <?php
 
+use App\Jobs\UpdateAttributeAffinities;
 use App\Models\Rating;
 use App\Models\Title;
 use App\Models\User;
 use App\Models\WatchProvider;
+use Illuminate\Support\Facades\Queue;
+
+beforeEach(function () {
+    Queue::fake([UpdateAttributeAffinities::class]);
+});
 
 test('ratings returns the ratings a user has made', function () {
     $user = User::factory()->create();

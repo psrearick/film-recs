@@ -31,6 +31,7 @@ vi.mock('@inertiajs/react', () => ({
 vi.mock('@/routes', () => ({
     logout: () => '/logout',
     ratings: () => '/ratings',
+    tasteProfile: () => '/taste-profile',
     watchProviders: () => '/watch-providers',
 }));
 
@@ -61,7 +62,7 @@ describe('NavbarAccountPopover', () => {
         expect(screen.queryByText('Logout')).not.toBeInTheDocument();
     });
 
-    it('shows links to the ratings page and logout when opened', () => {
+    it('shows links to the ratings and taste profile pages and logout when opened', () => {
         renderPopover();
 
         fireEvent.click(screen.getByRole('button', { name: 'Account menu' }));
@@ -69,6 +70,9 @@ describe('NavbarAccountPopover', () => {
         expect(
             screen.getByRole('button', { name: 'Your Ratings' }),
         ).toHaveAttribute('href', '/ratings');
+        expect(
+            screen.getByRole('button', { name: 'Your Taste Profile' }),
+        ).toHaveAttribute('href', '/taste-profile');
 
         const logout = screen.getByRole('button', { name: 'Logout' });
         expect(logout).toHaveAttribute('href', '/logout');

@@ -37,11 +37,21 @@ class SyncTitleCredits
     }
 
     /**
-     * @return array{person_id: int, credit_type: string, character: string|null}|null
+     * @return array{person_id: int, credit_type: string, character: string|null, billing_order: int|null, episode_count: int|null}|null
      */
     private function castCreditRow(mixed $member): ?array
     {
-        return $this->creditRow($member, CreditType::Cast, is_array($member) ? $this->characterFor($member) : null);
+        if (! is_array($member)) {
+            return null;
+        }
+
+        return $this->creditRow(
+            $member,
+            CreditType::Cast,
+            $this->characterFor($member),
+            is_int($member['order'] ?? null) ? $member['order'] : null,
+            is_int($member['total_episode_count'] ?? null) ? $member['total_episode_count'] : null,
+        );
     }
 
     /**
@@ -71,7 +81,7 @@ class SyncTitleCredits
     }
 
     /**
-     * @return array<int, array{person_id: int, credit_type: string, character: string|null}>
+     * @return array<int, array{person_id: int, credit_type: string, character: string|null, billing_order: int|null, episode_count: int|null}>
      */
     private function crewCreditRows(mixed $member): array
     {
@@ -115,10 +125,15 @@ class SyncTitleCredits
     }
 
     /**
-     * @return array{person_id: int, credit_type: string, character: string|null}|null
+     * @return array{person_id: int, credit_type: string, character: string|null, billing_order: int|null, episode_count: int|null}|null
      */
-    private function creditRow(mixed $member, CreditType $creditType, ?string $character = null): ?array
-    {
+    private function creditRow(
+        mixed $member,
+        CreditType $creditType,
+        ?string $character = null,
+        ?int $billingOrder = null,
+        ?int $episodeCount = null,
+    ): ?array {
         if (! is_array($member) || ! isset($member['id'], $member['name'])) {
             return null;
         }
@@ -128,6 +143,12 @@ class SyncTitleCredits
             ['name' => $member['name'], 'profile_path' => $member['profile_path'] ?? null],
         );
 
-        return ['person_id' => $person->id, 'credit_type' => $creditType->value, 'character' => $character];
+        return [
+            'person_id' => $person->id,
+            'credit_type' => $creditType->value,
+            'character' => $character,
+            'billing_order' => $billingOrder,
+            'episode_count' => $episodeCount,
+        ];
     }
 }
