@@ -17,8 +17,8 @@ readonly class GetPopularMovies
      *
      * @throws ConnectionException
      */
-    public function get(): array
+    public function get(int $page = 1): array
     {
-        return $this->getMovies($this->tmdb->popularMovies());
+        return $this->getMovies($this->tmdb->popularMovies($page));
     }
 }

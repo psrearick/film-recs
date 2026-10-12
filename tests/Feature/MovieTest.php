@@ -3,6 +3,7 @@
 use App\Enums\CreditType;
 use App\Enums\TitleType;
 use App\Jobs\UpdateAttributeAffinities;
+use App\Models\Genre;
 use App\Models\Person;
 use App\Models\Rating;
 use App\Models\Title;
@@ -130,6 +131,21 @@ test('an up to date movie is served from the database without calling tmdb', fun
     $response->assertOk();
 
     $response->assertInertia(fn ($page) => $page->where('movie.id', $movie->id));
+});
+
+test('the movie page includes the movie\'s related data', function () {
+    Title::factory()->movie()->hasAttached(Genre::factory())->create(['tmdb_id' => 603]);
+
+    $response = $this->get(route('movie', 603));
+
+    $response->assertInertia(fn ($page) => $page
+        ->has('movie.genres', 1)
+        ->has('movie.keywords', 0)
+        ->has('movie.actors', 0)
+        ->has('movie.directors', 0)
+        ->has('movie.producers', 0)
+        ->has('movie.composers', 0)
+        ->has('movie.watch_providers', 0));
 });
 
 test('the authenticated user\'s rating is included on the movie page', function () {

@@ -2,6 +2,7 @@
 
 use App\Enums\TitleType;
 use App\Jobs\UpdateAttributeAffinities;
+use App\Models\Genre;
 use App\Models\Rating;
 use App\Models\Title;
 use App\Models\User;
@@ -164,6 +165,21 @@ test('an up to date series is served from the database without calling tmdb', fu
     $response->assertOk();
 
     $response->assertInertia(fn ($page) => $page->where('series.id', $series->id));
+});
+
+test('the series page includes the series\'s related data', function () {
+    Title::factory()->tv()->hasAttached(Genre::factory())->create(['tmdb_id' => 4607]);
+
+    $response = $this->get(route('series', 4607));
+
+    $response->assertInertia(fn ($page) => $page
+        ->has('series.genres', 1)
+        ->has('series.keywords', 0)
+        ->has('series.actors', 0)
+        ->has('series.directors', 0)
+        ->has('series.producers', 0)
+        ->has('series.composers', 0)
+        ->has('series.watch_providers', 0));
 });
 
 test('the authenticated user\'s rating is included on the series page', function () {

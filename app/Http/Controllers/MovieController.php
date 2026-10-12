@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Tmdb\GetMovie;
+use App\Models\Title;
 use Inertia\Inertia;
 use Inertia\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -24,7 +25,7 @@ class MovieController extends Controller
         }
 
         return Inertia::render('movie', [
-            'movie' => $movie->append('user_rating'),
+            'movie' => $movie->load(Title::DETAIL_RELATIONS)->append('user_rating'),
         ]);
     }
 }

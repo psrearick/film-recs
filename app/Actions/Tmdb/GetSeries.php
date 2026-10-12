@@ -35,7 +35,7 @@ readonly class GetSeries
             $series = $this->fetchAndSyncSeries($id, $series);
         }
 
-        return $series?->load(['genres', 'keywords', 'actors', 'directors', 'producers', 'composers', 'watchProviders']);
+        return $series;
     }
 
     /**

@@ -35,7 +35,7 @@ readonly class GetMovie
             $movie = $this->fetchAndSyncMovie($id, $movie);
         }
 
-        return $movie?->load(['genres', 'keywords', 'actors', 'directors', 'producers', 'composers', 'watchProviders']);
+        return $movie;
     }
 
     /**

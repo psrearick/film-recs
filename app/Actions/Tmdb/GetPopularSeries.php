@@ -17,8 +17,8 @@ readonly class GetPopularSeries
      *
      * @throws ConnectionException
      */
-    public function get(): array
+    public function get(int $page = 1): array
     {
-        return $this->getSeries($this->tmdb->popularSeries());
+        return $this->getSeries($this->tmdb->popularSeries($page));
     }
 }

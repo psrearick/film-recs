@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Tmdb\GetSeries;
+use App\Models\Title;
 use Inertia\Inertia;
 use Inertia\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -24,7 +25,7 @@ class SeriesController extends Controller
         }
 
         return Inertia::render('series', [
-            'series' => $series->append('user_rating'),
+            'series' => $series->load(Title::DETAIL_RELATIONS)->append('user_rating'),
         ]);
     }
 }

@@ -52,6 +52,13 @@ class Title extends Model
     use HasFactory;
 
     /**
+     * The relations the movie and series detail pages render.
+     *
+     * @var list<string>
+     */
+    public const array DETAIL_RELATIONS = ['genres', 'keywords', 'actors', 'directors', 'producers', 'composers', 'watchProviders'];
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>

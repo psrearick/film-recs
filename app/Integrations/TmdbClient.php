@@ -6,6 +6,7 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
 readonly class TmdbClient
@@ -83,9 +84,9 @@ readonly class TmdbClient
      *
      * @throws ConnectionException
      */
-    public function popularMovies(): Collection
+    public function popularMovies(int $page = 1): Collection
     {
-        return $this->request()->get('/discover/movie?page=1&sort_by=popularity.desc&vote_count.gte=500')->collect();
+        return $this->cachedDiscover("movie?page=$page&sort_by=popularity.desc&vote_count.gte=500");
     }
 
     /**
@@ -93,9 +94,9 @@ readonly class TmdbClient
      *
      * @throws ConnectionException
      */
-    public function popularSeries(): Collection
+    public function popularSeries(int $page = 1): Collection
     {
-        return $this->request()->get('/discover/tv?page=1&sort_by=popularity.desc&vote_count.gte=500')->collect();
+        return $this->cachedDiscover("tv?page=$page&sort_by=popularity.desc&vote_count.gte=500");
     }
 
     /**
@@ -136,6 +137,22 @@ readonly class TmdbClient
     public function allSeriesProviders(): Collection
     {
         return $this->request()->get('/watch/providers/tv?watch_region=US')->collect();
+    }
+
+    /**
+     * Cache the response as a plain array, since the cache store refuses to unserialize objects.
+     *
+     * @return Collection<string, mixed>
+     *
+     * @throws ConnectionException
+     */
+    private function cachedDiscover(string $discoverCall): Collection
+    {
+        return collect(Cache::remember(
+            "tmdb:discover:$discoverCall",
+            now()->addDay(),
+            fn (): array => $this->request()->get("/discover/$discoverCall")->collect()->all(),
+        ));
     }
 
     private function request(): PendingRequest
