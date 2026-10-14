@@ -16,7 +16,8 @@ the taste-profile and match-scoring algorithms.
 
 ## Status
 
-In progress. What works today:
+In progress. Phases 0–3 of the plan are done and phase 4 (recommendations) has
+started. What works today:
 
 - **Home page** — popular and trending movies and series.
 - **Search** — multi-search against TMDb.
@@ -24,13 +25,32 @@ In progress. What works today:
   streaming availability.
 - **Person pages** — biography plus credits, broken down by role.
 - **Ratings** — rate a title 1–10, and a sortable table of your rated titles.
+- **Streaming services** — pick the services you subscribe to from the TMDb
+  provider list, which a daily job keeps in sync.
+- **Taste profile** — every rating change queues a debounced recompute of your
+  affinities for genres, keywords, people (by role), and decades: how far you
+  rate each above or below your own average, with a confidence based on sample
+  size. The profile page shows what you favor and disfavor, hides
+  low-confidence results by default, and lets you drill into the rated titles
+  behind each affinity. Thresholds live in `config/recommendations.php`.
+- **Generic candidate pool** — a daily job syncs the most popular movies and
+  series (five TMDb pages of each) into `generic_pool_titles`, the
+  non-personalized half of the recommendation candidate set. Nothing reads it
+  yet.
 - **Auth** — registration, login, password reset, profile and password updates
   (via Fortify; two-factor and passkeys are scaffolded but disabled in
   `config/fortify.php`).
 
-Not built yet: streaming-service selection, the taste-profile engine
-(`user_attribute_affinities`), and recommendation generation — phases 2 through
-5 of the plan.
+Not built yet:
+
+- **Personalized candidates** — discover queries driven by a user's strongest
+  affinities, stored per user alongside the generic pool.
+- **Match scoring and the Recommendations page** — scoring candidates against
+  the taste profile, with filters for genre, type, and streaming service.
+- **Polish (phase 5)** — empty states for the recommendation flow and a
+  scheduled refresh of stale title metadata. For now,
+  `vendor/bin/sail artisan titles:refresh-rated` re-syncs every rated title
+  and recomputes affinities on demand.
 
 ## Stack
 
@@ -78,6 +98,15 @@ Then run the dev server and open the app:
 ```bash
 npm run dev          # Vite, on the host
 vendor/bin/sail open
+```
+
+Affinity recomputes and credit backfills are queued, and the watch-provider
+list and generic candidate pool refresh on the scheduler, so run both workers
+when you need them:
+
+```bash
+vendor/bin/sail artisan queue:work
+vendor/bin/sail artisan schedule:work
 ```
 
 `APP_PORT` and `VITE_PORT` in `.env` control which host ports Sail publishes.
@@ -135,15 +164,24 @@ JS/TS/CSS, and Pint on changed PHP.
 app/
 ├── Actions/
 │   ├── Tmdb/            Fetch-and-sync entry points: GetMovie, GetSeries,
-│   │                    GetPerson, Search, GetPopular*/GetTrending*
-│   └── Sync*            Reconcile one relation from a TMDb payload
-│                        (credits, genres, keywords, watch providers)
+│   │                    GetPerson, Search, GetPopular*/GetTrending*,
+│   │                    GetAll*Providers
+│   ├── Sync*            Reconcile one relation from a TMDb payload
+│   │                    (credits, genres, keywords, watch providers)
+│   └── GetTasteProfile, GetAffinityTitles, ConstrainToCountedCredits
+│                        Read side of the taste profile
 ├── Integrations/
 │   └── TmdbClient.php   Thin HTTP wrapper over the TMDb endpoints
 ├── Http/Controllers/    Thin — they inject Actions and Inertia::render
-├── Jobs/                SyncPersonCredits (queued backfill)
-├── Models/              Title, Person, Genre, Keyword, WatchProvider, Rating
-└── Enums/               TitleType, CreditType, AccessType
+├── Jobs/                UpdateAttributeAffinities (debounced, per user),
+│                        SyncPersonCredits (queued backfill),
+│                        UpdateWatchProviders and FetchGenericCandidatePool
+│                        (scheduled daily in routes/console.php)
+├── Observers/           RatingObserver dispatches the affinity recompute
+├── Console/Commands/    titles:refresh-rated
+├── Models/              Title, Person, Genre, Keyword, WatchProvider, Rating,
+│                        AttributeAffinity, GenericPoolTitle
+└── Enums/               TitleType, CreditType, AccessType, AttributeType
 
 resources/js/
 ├── pages/               Inertia pages, one per route
@@ -157,6 +195,15 @@ only calls TMDb when the record is missing or `is_stale`. A fetch upserts the
 title and its relations inside one transaction. Watch providers carry their own
 `fetched_at` and refresh on a much shorter TTL than the rest of a title's
 metadata, since streaming licensing changes far more often than cast and crew.
+
+`Get*` returns the bare title; the movie and series controllers load
+`Title::DETAIL_RELATIONS` themselves, so jobs that only need a title synced
+don't pay for relations they never read. The popular discover responses are
+cached for a day, which the home page and the candidate pool job share.
+
+A user's taste profile is the `attribute_affinities` table and nothing else:
+`UpdateAttributeAffinities` rebuilds a user's rows from their ratings in SQL,
+and everything downstream reads that table.
 
 Every React component and page has a colocated `*.test.tsx`.
 
