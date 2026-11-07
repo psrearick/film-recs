@@ -1,0 +1,36 @@
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": ["config:recommended"],
+    "schedule": ["before 6am on monday"],
+    "minimumReleaseAge": "14 days",
+    "internalChecksFilter": "strict",
+    "osvVulnerabilityAlerts": true,
+    "lockFileMaintenance": {
+        "enabled": true,
+        "schedule": ["before 6am on monday"]
+    },
+    "packageRules": [
+        {
+            "description": "vite-plus pins exact vite/vitest versions, and the vite alias and vitest override must match it, so they always move together.",
+            "groupName": "vite-plus",
+            "matchPackageNames": [
+                "vite-plus",
+                "vite",
+                "@voidzero-dev/vite-plus-core",
+                "vitest",
+                "@vitest/**"
+            ]
+        },
+        {
+            "description": "Automerge patch updates of stable (1.0+) packages once CI passes.",
+            "matchUpdateTypes": ["patch"],
+            "matchCurrentVersion": "!/^v?0\\./",
+            "automerge": true
+        },
+        {
+            "description": "Boost updates regenerate CLAUDE.md, AGENTS.md and the agent skill files, so always review them by hand.",
+            "matchPackageNames": ["laravel/boost"],
+            "automerge": false
+        }
+    ]
+}

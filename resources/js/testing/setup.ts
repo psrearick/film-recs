@@ -52,7 +52,12 @@ class MemoryStorage implements Storage {
     }
 }
 
-globalThis.localStorage = new MemoryStorage();
+// Vitest exposes `localStorage` as a getter-only property, so it has to be
+// redefined rather than assigned.
+Object.defineProperty(globalThis, 'localStorage', {
+    configurable: true,
+    value: new MemoryStorage(),
+});
 
 afterEach(() => {
     cleanup();
