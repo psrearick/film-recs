@@ -6,6 +6,7 @@ use App\Integrations\TmdbClient;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Collection;
+use Stringable;
 
 readonly class Search
 {
@@ -49,14 +50,14 @@ readonly class Search
             'movie' => [
                 'id' => $id,
                 'type' => 'movie',
-                'label' => $this->toStringOrDefault($result['title'] ?? $result['original_title'] ?? null, 'Untitled'),
+                'label' => $this->toLabel($result['title'] ?? null, $result['original_title'] ?? null, $result['release_date'] ?? null),
                 'posterPath' => $this->toNullableString($result['poster_path'] ?? null),
                 'url' => "/movies/$id",
             ],
             'tv' => [
                 'id' => $id,
                 'type' => 'tv',
-                'label' => $this->toStringOrDefault($result['name'] ?? $result['original_name'] ?? null, 'Untitled'),
+                'label' => $this->toLabel($result['name'] ?? null, $result['original_name'] ?? null, $result['first_air_date'] ?? null),
                 'posterPath' => $this->toNullableString($result['poster_path'] ?? null),
                 'url' => "/series/$id",
             ],
@@ -80,11 +81,36 @@ readonly class Search
             return (string) $value;
         }
 
+        if (is_scalar($value) || $value instanceof Stringable) {
+            return (string) $value;
+        }
+
         return $default;
     }
 
     private function toNullableString(mixed $value): ?string
     {
         return is_string($value) ? $value : null;
+    }
+
+    private function toLabel(mixed $title, mixed $original_title, mixed $date): string
+    {
+        $title = $this->toStringOrDefault($title ?? $original_title ?? null, '');
+
+        $release_year = $this->releaseYear($date);
+        $release_year = $release_year ? "($release_year)" : '';
+
+        $label = trim(implode(' ', [$title, $release_year]));
+
+        return $label ?: 'Untitled';
+    }
+
+    private function releaseYear(mixed $releaseDate): ?int
+    {
+        if (! is_string($releaseDate) || $releaseDate === '') {
+            return null;
+        }
+
+        return (int) explode('-', $releaseDate)[0];
     }
 }
